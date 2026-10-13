@@ -278,6 +278,56 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
 .plan .kind { font-size: 0.85rem; font-weight: 700; color: var(--sun); }
 .plan p { margin: 0; color: var(--muted); font-size: 0.95rem; }
 
+/* ---------- 代表プロフィール ---------- */
+.profile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  align-items: flex-start;
+}
+.profile-icon {
+  width: 160px;
+  height: 160px;
+  max-width: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--leaf-soft);
+  flex-shrink: 0;
+}
+.profile-body { flex: 1 1 320px; min-width: 0; }
+.profile-name {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+}
+.profile-name span {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 12px;
+}
+.profile-role { color: var(--leaf); font-weight: 700; margin: 0 0 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 16px 0 0; }
+.chips li {
+  font-size: 0.85rem;
+  padding: 2px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+/* ---------- サークルメンバー募集 ---------- */
+.circle-lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3.4vw, 1.8rem);
+  font-weight: 700;
+  color: var(--sun);
+  margin: 0 0 16px;
+}
+#circle .prose { margin-bottom: 24px; }
+
 /* ---------- 相談フォームへの案内 ---------- */
 .contact {
   background: var(--leaf);
