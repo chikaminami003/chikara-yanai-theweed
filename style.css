@@ -1,0 +1,301 @@
+/* ============================================================
+   the weed — サイト全体の見た目（デザイン）を決めるファイル
+   色や文字の大きさを変えたいときは、まず下の :root の中を変えます。
+   レイアウト：左寄せの一段組み。アスファルトのすき間から伸びる草をイメージ。
+   ============================================================ */
+
+:root {
+  /* 色（ライトモード） */
+  --bg: #f3f4ee;        /* 背景：少し緑がかった明るい灰色 */
+  --surface: #ffffff;   /* カードなどの面 */
+  --ink: #1f2a22;       /* 本文の文字色：深い苔色 */
+  --muted: #5b675e;     /* 補足の文字色 */
+  --line: #d4d9cd;      /* 線の色 */
+  --leaf: #3d6b45;      /* メインの色：葉の緑 */
+  --sun: #c98a1b;       /* 差し色：たんぽぽの黄色 */
+  --leaf-soft: #e2eadc; /* 緑の薄い面 */
+
+  /* 文字 */
+  --font-display: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+
+  --radius: 14px;
+  --max: 1040px;
+}
+
+/* ダークモード（スマホやPCの設定が暗い表示のとき） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151a16; --surface: #1d241f; --ink: #e6ebe3; --muted: #a3aea5;
+    --line: #313b33; --leaf: #8cbf8f; --sun: #e3ad4a; --leaf-soft: #233026;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151a16; --surface: #1d241f; --ink: #e6ebe3; --muted: #a3aea5;
+  --line: #313b33; --leaf: #8cbf8f; --sun: #e3ad4a; --leaf-soft: #233026;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+}
+
+a { color: var(--leaf); }
+a:focus-visible, .button:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding-inline: 20px;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.4;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--leaf);
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+/* ---------- ヘッダー ---------- */
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.site-header .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-block: 16px;
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo svg { width: 28px; height: 28px; }
+.nav { display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 0.95rem; }
+.nav a { color: var(--ink); text-decoration: none; }
+.nav a:hover { color: var(--leaf); text-decoration: underline; }
+
+/* ---------- ボタン ---------- */
+.button {
+  display: inline-block;
+  background: var(--leaf);
+  color: var(--bg);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 999px;
+  transition: transform 0.15s ease;
+}
+.button:hover { transform: translateY(-2px); }
+.button.ghost {
+  background: transparent;
+  color: var(--leaf);
+  border: 2px solid var(--leaf);
+}
+
+/* ---------- ヒーロー（一番上の大きな見出し） ---------- */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: 72px 56px;
+}
+.hero h1 {
+  font-size: clamp(2.1rem, 6vw, 3.6rem);
+  max-width: 14em;
+}
+.hero h1 .accent { color: var(--leaf); }
+.hero p.lead {
+  font-size: 1.1rem;
+  max-width: 34em;
+  margin: 24px 0 32px;
+  color: var(--muted);
+}
+.hero .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+/* 地面のすき間から伸びる草の絵 */
+.hero .crack {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 90px;
+  margin-top: 48px;
+  color: var(--leaf);
+}
+
+/* ---------- セクション共通 ---------- */
+section.block { padding-block: 64px; border-top: 1px solid var(--line); }
+section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
+.prose { max-width: 38em; }
+.prose p { margin: 0 0 1em; }
+
+/* ---------- 企業理念 ---------- */
+.philosophy-main {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.6vw, 2rem);
+  line-height: 1.6;
+  border-left: 4px solid var(--sun);
+  padding-left: 20px;
+  margin: 0 0 40px;
+  max-width: 22em;
+}
+.values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
+  margin-top: 40px;
+}
+.values > div { min-width: 0; }
+.values h3 { font-size: 1.15rem; color: var(--leaf); margin-bottom: 8px; }
+.values p { margin: 0; color: var(--muted); }
+
+/* ---------- サポート内容 ---------- */
+.support-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.support-list li {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  min-width: 0;
+}
+.support-list h3 { font-size: 1.1rem; margin-bottom: 6px; }
+.support-list p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+/* ---------- ご相談の流れ ---------- */
+.flow {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0;
+  counter-reset: step;
+}
+.flow li {
+  counter-increment: step;
+  padding: 0 24px 24px 0;
+  min-width: 0;
+}
+.flow li::before {
+  content: "STEP " counter(step);
+  display: block;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+  color: var(--leaf);
+  border-top: 3px solid var(--leaf);
+  padding-top: 12px;
+  margin-bottom: 8px;
+}
+.flow h3 { font-size: 1.2rem; margin-bottom: 6px; }
+.flow p { margin: 0; color: var(--muted); }
+.tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--leaf-soft);
+  color: var(--leaf);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.tag.paid { background: transparent; color: var(--sun); border: 1px solid var(--sun); }
+
+/* ---------- 料金 ---------- */
+.fee-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 44em;
+}
+.fee-box h3 { font-size: 1.15rem; margin-bottom: 12px; }
+.fee-box ul { margin: 0 0 16px; padding-left: 1.3em; }
+.fee-box li { margin-bottom: 6px; }
+.note { font-size: 0.9rem; color: var(--muted); }
+
+/* ---------- 料金プラン ---------- */
+.plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.plan {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.plan h3 { font-size: 1.15rem; }
+.plan .price {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--leaf);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+.plan .price small { font-size: 0.9rem; color: var(--muted); font-family: var(--font-body); }
+.plan .kind { font-size: 0.85rem; font-weight: 700; color: var(--sun); }
+.plan p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+/* ---------- 相談フォームへの案内 ---------- */
+.contact {
+  background: var(--leaf);
+  color: var(--bg);
+  border-radius: var(--radius);
+  padding: 44px 28px;
+}
+.contact h2 { color: var(--bg); }
+.contact p { max-width: 36em; }
+.contact .button { background: var(--bg); color: var(--leaf); }
+
+/* ---------- フッター ---------- */
+.site-footer {
+  padding-block: 32px 48px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
+}
