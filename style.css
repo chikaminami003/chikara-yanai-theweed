@@ -103,6 +103,29 @@ h1, h2, h3 {
 .nav a { color: var(--ink); text-decoration: none; }
 .nav a:hover { color: var(--leaf); text-decoration: underline; }
 
+/* ---------- タブ（ページ切り替え） ---------- */
+.site-header .header-row { padding-block: 14px 8px; }
+.tabs { border-top: 1px solid var(--line); }
+.tabs-row {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs-row::-webkit-scrollbar { display: none; }
+.tabs a {
+  flex: 0 0 auto;
+  padding: 12px 14px 10px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+.tabs a:hover { color: var(--ink); }
+.tabs a[aria-current="page"] { color: var(--leaf); border-bottom-color: var(--leaf); }
+
 /* ---------- ボタン ---------- */
 .button {
   display: inline-block;
@@ -121,11 +144,35 @@ h1, h2, h3 {
   border: 2px solid var(--leaf);
 }
 
+.button.small { padding: 8px 20px; font-size: 0.9rem; }
+
+/* ---------- 各ページの見出し ---------- */
+.page-head { padding-block: 48px 32px; }
+.page-head h1 { font-size: clamp(1.8rem, 5vw, 2.8rem); max-width: 20em; }
+.page-head .lead { color: var(--muted); max-width: 38em; margin: 16px 0 0; font-size: 1.05rem; }
+.page-head + .crisis { padding-top: 0; }
+
+/* ---------- トップの入口（個人・法人） ---------- */
+.entry { border-top: none; padding-top: 0; }
+.entry-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.entry-card {
+  display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 28px; color: var(--ink); text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.entry-card:hover { transform: translateY(-3px); border-color: var(--leaf); }
+.entry-card h2 { font-size: 1.5rem; margin: 0; }
+.entry-card p { margin: 0; color: var(--muted); }
+.entry-card .entry-for { color: var(--sun); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; }
+.entry-more { margin-top: auto; padding-top: 12px; color: var(--leaf); font-weight: 700; }
+.check-list { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 40em; }
+
 /* ---------- ヒーロー（一番上の大きな見出し） ---------- */
 .hero {
   position: relative;
   overflow: hidden;
-  padding-block: 72px 56px;
+  padding-block: 64px 40px;
 }
 .hero h1 {
   font-size: clamp(2.1rem, 6vw, 3.6rem);
@@ -397,5 +444,5 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .button { transition: none; }
+  .button, .entry-card { transition: none; }
 }
