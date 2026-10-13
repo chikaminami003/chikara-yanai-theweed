@@ -366,6 +366,25 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
 .contact p { max-width: 36em; }
 .contact .button { background: var(--bg); color: var(--leaf); }
 
+/* ---------- 悩み別ページ（soudan/） ---------- */
+.article { padding-block: 32px 64px; }
+.article h1 { font-size: clamp(1.7rem, 5vw, 2.6rem); max-width: 20em; margin-bottom: 16px; }
+.article .lead { font-size: 1.05rem; color: var(--muted); max-width: 38em; margin: 0 0 32px; }
+.breadcrumb { font-size: 0.85rem; color: var(--muted); margin: 0 0 12px; }
+.article-section { border-top: 1px solid var(--line); padding-block: 32px; max-width: 46em; }
+.article-section h2 { font-size: 1.35rem; margin-bottom: 16px; }
+.article-section ul, .article-section ol { margin: 0; padding-left: 1.4em; display: grid; gap: 10px; }
+.article-section p { margin: 0 0 16px; }
+.article .crisis-box { margin-block: 8px 32px; }
+.related { border-top: 1px solid var(--line); padding-top: 32px; margin-top: 16px; }
+.related h2 { font-size: 1.1rem; margin-bottom: 12px; }
+.related ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.related a {
+  display: inline-block; padding: 6px 16px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); text-decoration: none;
+}
+.support-list .more { display: inline-block; margin-top: 10px; font-weight: 700; font-size: 0.9rem; }
+
 /* ---------- フッター ---------- */
 .site-footer {
   padding-block: 32px 48px;
