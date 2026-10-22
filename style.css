@@ -503,7 +503,7 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
   background: var(--surface); color: var(--ink); text-decoration: none;
 }
 .column-list a:hover { border-color: var(--leaf); }
-.column-list h2 { font-size: 1.15rem; margin: 0 0 4px; }
+section.block .column-list h2 { font-size: 1.15rem; margin: 0 0 4px; }
 .column-list p { margin: 0; color: var(--muted); font-size: 0.9rem; }
 .column-empty {
   max-width: 40em; padding: 28px; border: 1px dashed var(--line); border-radius: var(--radius);
