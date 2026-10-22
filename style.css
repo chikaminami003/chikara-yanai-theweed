@@ -356,6 +356,16 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
 #business .prose { margin-bottom: 24px; }
 .business-list li { border-top: 3px solid var(--leaf); }
 
+/* ---------- カウンセラー紹介 ---------- */
+.counselors { display: grid; gap: 28px; margin-top: 24px; }
+.counselor { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.counselor-body { flex: 1 1 300px; min-width: 0; }
+.counselor-body h3 { font-size: 1.3rem; margin-bottom: 8px; }
+.counselor-body h3 span { font-family: var(--font-body); font-size: 0.85rem; font-weight: 400; color: var(--muted); margin-left: 10px; }
+.counselor-body p { margin: 0; max-width: 38em; }
+.free-box { margin-bottom: 24px; }
+.free-box p { margin: 0; }
+
 /* ---------- 代表プロフィール ---------- */
 .profile {
   display: flex;
