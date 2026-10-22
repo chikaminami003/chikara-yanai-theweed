@@ -9,7 +9,7 @@
 | `soudan/index.html` | 困りごとの相談 | 相談できること、ご相談の流れ |
 | `soudan/shakkin.html` など5つ | （困りごとの相談の下） | 借金・モラハラ・パワハラ・就職・生きるのがつらいとき |
 | `ryokin.html` | 料金 | 3つのプランと、後払い・無料の条件 |
-| `business/index.html` | 法人の方へ | 中小企業向けマザーAI（相談後に見積書を送付） |
+| `business/index.html` | 法人の方へ | 中小企業向けMother AI（相談後に見積書を送付） |
 | `circle.html` | サークル募集 | 一次創作の仲間募集 |
 | `column/index.html` | コラム | コラムの一覧（`column/template.html` が記事のひな形） |
 | `about.html` | 私たちについて | 企業理念、代表プロフィール |

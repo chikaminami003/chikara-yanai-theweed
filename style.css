@@ -127,6 +127,39 @@ h1, h2, h3 {
 .tabs a:hover { color: var(--ink); }
 .tabs a[aria-current="page"] { color: var(--leaf); border-bottom-color: var(--leaf); }
 
+/* スマホ：タブを折り返して全部見せる */
+@media (max-width: 640px) {
+  .site-header .tabs-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-block: 8px 10px;
+    overflow: visible;
+  }
+  .tabs a {
+    flex: 1 1 auto;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    border-bottom-width: 1px;
+    text-align: center;
+    font-size: 0.82rem;
+    letter-spacing: 0;
+    white-space: nowrap;
+    background: var(--surface);
+  }
+  .tabs a[aria-current="page"] {
+    background: var(--leaf);
+    border-color: var(--leaf);
+    color: var(--bg);
+  }
+  .logo { font-size: 1.3rem; }
+  .hero h1 { font-size: 1.75rem; }
+  .hero { padding-block: 40px 24px; }
+  .page-head { padding-block: 32px 20px; }
+  section.block { padding-block: 44px; }
+}
+
 /* ---------- ボタン ---------- */
 .button {
   display: inline-block;
