@@ -357,6 +357,17 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
 #business .prose { margin-bottom: 24px; }
 .business-list li { border-top: 3px solid var(--leaf); }
 
+/* ---------- the seed 画面イメージ ---------- */
+.shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; margin-top: 20px; }
+.shot { margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.shot img {
+  display: block; width: 100%; height: auto; max-width: 100%;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+}
+.shot a:hover img { border-color: var(--leaf); }
+.shot figcaption { font-size: 0.9rem; color: var(--muted); }
+.shot figcaption strong { display: block; color: var(--ink); font-size: 1rem; margin-bottom: 2px; }
+
 /* ---------- カウンセラー紹介 ---------- */
 .counselors { display: grid; gap: 28px; margin-top: 24px; }
 .counselor { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
