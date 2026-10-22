@@ -113,6 +113,7 @@ h1, h2, h3 {
   scrollbar-width: none;
 }
 .tabs-row::-webkit-scrollbar { display: none; }
+.site-header .tabs-row { flex-wrap: nowrap; justify-content: flex-start; gap: 4px; padding-block: 0; }
 .tabs a {
   flex: 0 0 auto;
   padding: 12px 14px 10px;
@@ -447,6 +448,23 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
   border: 1px solid var(--line); background: var(--surface); text-decoration: none;
 }
 .support-list .more { display: inline-block; margin-top: 10px; font-weight: 700; font-size: 0.9rem; }
+
+/* ---------- コラム ---------- */
+.column-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; max-width: 46em; }
+.column-list:empty { display: none; }
+.column-list:not(:empty) + .column-empty { display: none; }
+.column-list a {
+  display: block; padding: 20px 22px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); text-decoration: none;
+}
+.column-list a:hover { border-color: var(--leaf); }
+.column-list h2 { font-size: 1.15rem; margin: 0 0 4px; }
+.column-list p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.column-empty {
+  max-width: 40em; padding: 28px; border: 1px dashed var(--line); border-radius: var(--radius);
+  color: var(--muted); margin: 0;
+}
+.column-meta { color: var(--muted); font-size: 0.9rem; margin: 0 0 8px; }
 
 /* ---------- フッター ---------- */
 .site-footer {
