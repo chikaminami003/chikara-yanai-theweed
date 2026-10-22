@@ -439,6 +439,7 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
 .article-section h2 { font-size: 1.35rem; margin-bottom: 16px; }
 .article-section ul, .article-section ol { margin: 0; padding-left: 1.4em; display: grid; gap: 10px; }
 .article-section p { margin: 0 0 16px; }
+.article-section ul + p, .article-section ol + p { margin-top: 16px; }
 .article .crisis-box { margin-block: 8px 32px; }
 .related { border-top: 1px solid var(--line); padding-top: 32px; margin-top: 16px; }
 .related h2 { font-size: 1.1rem; margin-bottom: 12px; }
