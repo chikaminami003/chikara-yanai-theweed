@@ -545,6 +545,32 @@ section.block .column-list h2 { font-size: 1.15rem; margin: 0 0 4px; }
   .flow li:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -19px; transform: translateX(-50%); }
 }
 
+/* ---------- the seed のページ ---------- */
+.tag.image { background: transparent; color: var(--sun); border: 1px solid var(--sun); }
+.seed-index { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.seed-index a { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); text-decoration: none; font-size: 0.88rem; }
+.seed-index a:hover { border-color: var(--leaf); color: var(--leaf); }
+.seed-dept { border-top: 1px solid var(--line); scroll-margin-top: 120px; }
+.seed-dept .check-list { margin-bottom: 8px; }
+.seed-api { font-size: 0.88rem; color: var(--sun); margin: 12px 0 0; max-width: 46em; }
+.seed-notice { border: 1px dashed var(--line); border-radius: var(--radius); padding: 16px 20px; color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; max-width: 46em; }
+.seed-notice p { margin: 0; }
+.seed-notice p + p { margin-top: 6px; }
+
+/* ---------- トップの the seed ---------- */
+.seed-hero-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: center; }
+.seed-hero h1 .accent { font-size: 1.35em; }
+.seed-hero-shot { margin: 0; }
+.seed-hero-shot img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 12px 32px rgba(0,0,0,0.12); display: block; }
+.seed-hero-shot figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+.seed-points { list-style: none; padding: 0; margin: 0 0 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.seed-points li { background: var(--leaf-soft); border-radius: var(--radius); padding: 16px 18px; font-size: 0.92rem; }
+.seed-points strong { display: block; color: var(--leaf); margin-bottom: 4px; }
+.small-budget { border-top: 1px solid var(--line); }
+.small-budget .lead { color: var(--muted); max-width: 40em; margin: 0 0 24px; }
+.small-budget .entry-card h2 { font-size: 1.3rem; margin: 0; }
+@media (max-width: 800px) { .seed-hero-grid { grid-template-columns: 1fr; gap: 24px; } }
+
 /* ---------- フッター ---------- */
 .site-footer {
   padding-block: 32px 48px;
