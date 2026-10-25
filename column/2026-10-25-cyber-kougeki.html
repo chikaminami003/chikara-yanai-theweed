@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 検索結果やSNSでの見え方を決める部分（タイトル・説明文・キーワード） -->
+  <title>いま起きている「ネットテロ」をまとめて図解。仕組みと、国・企業の対応、これからの守り方｜コラム｜the weed</title>
+  <meta name="description" content="2026年に日本で相次ぐサイバー攻撃（ネットテロ）を図でまとめました。ランサムウェアや不正アクセス、DDoS、フィッシングの仕組み、政府の能動的サイバー防御や企業の対応、これから私たちができる対策をやさしく解説します。">
+  <meta name="keywords" content="サイバー攻撃 2026,ネットテロ,ランサムウェア 仕組み,不正アクセス 情報漏えい,DDoS攻撃,フィッシング詐欺 対策,能動的サイバー防御,中小企業 セキュリティ対策,サプライチェーン攻撃">
+  <meta name="author" content="矢内統">
+  <link rel="canonical" href="https://chikaminami003.github.io/chikara-yanai-theweed/column/2026-10-25-cyber-kougeki.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="いま起きている「ネットテロ」をまとめて図解。仕組みと、国・企業の対応、これからの守り方｜the weed">
+  <meta property="og:description" content="2026年に日本で相次ぐサイバー攻撃（ネットテロ）を図でまとめました。ランサムウェアや不正アクセス、DDoS、フィッシングの仕組み、政府の能動的サイバー防御や企業の対応、これから私たちができる対策をやさしく解説します。">
+  <meta property="og:url" content="https://chikaminami003.github.io/chikara-yanai-theweed/column/2026-10-25-cyber-kougeki.html">
+  <meta property="og:image" content="https://chikaminami003.github.io/chikara-yanai-theweed/images/profile.jpg">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Zen+Maru+Gothic:wght@700&display=swap">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="logo" href="../index.html">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 28.5h22" stroke="var(--line)" stroke-width="1.6" stroke-linecap="round"/><path d="M15.2 28 C14.4 20.5 11.6 13.6 5.8 8.2 C12.2 11.6 16 18.6 17 28Z" fill="var(--leaf)"/><path d="M16.4 28 C16.8 19.8 19.6 13 25.6 9 C21 13.6 18.8 20.4 18.4 28Z" fill="var(--leaf)"/><path d="M15.8 28 C15.2 20.4 15.6 12.6 17 4.8 C18.3 12.6 18.1 20.4 17.6 28Z" fill="var(--leaf)"/><path d="M21.6 28 C21.8 23.6 23 20.4 24.4 18" stroke="var(--leaf)" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="24.8" cy="16.4" r="2.6" fill="var(--sun)"/></svg>
+      the weed
+    </a>
+    <a class="button small" href="https://docs.google.com/forms/d/e/1FAIpQLSd4V7L7JFEnskQOpbKlRHCwiKqGPFUcnjzo59tYMj3PtOjkYA/viewform" target="_blank" rel="noopener">相談する</a>
+  </div>
+  <!-- タブ（ページの切り替えメニュー）。ページを増やすときはここに1行足します -->
+  <nav class="tabs" aria-label="ページの切り替え">
+    <div class="wrap tabs-row">
+      <a href="../index.html">トップ</a>
+      <a href="../soudan/index.html">困りごとの相談</a>
+      <a href="../ryokin.html">料金</a>
+      <a href="../business/index.html">法人の方へ</a>
+      <a href="../circle.html">サークル募集</a>
+      <a href="index.html" aria-current="page">コラム</a>
+      <a href="../about.html">私たちについて</a>
+    </div>
+  </nav>
+</header>
+<!--BODY-START-->
+<main>
+  <article class="article">
+    <div class="wrap">
+      <p class="breadcrumb"><a href="index.html">コラム</a> ／ ネットの安全</p>
+      <h1>いま起きている「ネットテロ」をまとめて図解。仕組みと、国・企業の対応、これからの守り方</h1>
+      <p class="column-meta"><time datetime="2026-10-25">2026年10月25日</time> ／ 千花</p>
+      <p class="lead">お店のレジが止まる。鉄道会社や大学のシステムが動かなくなる。会員の個人情報が何百万件も流出する。2026年は、こうしたサイバー攻撃（いわゆる「ネットテロ」）のニュースがほぼ毎週のように流れています。何が起きているのか、どういう仕組みなのか、国や企業はどう動いているのか。そして私たちは何をすればいいのか。図を使って、できるだけやさしくまとめました。</p>
+
+      <section class="article-section">
+        <h2>数字で見る、いまの状況</h2>
+        <p>警察庁のまとめでは、2026年1月〜6月に警察へ届けられたランサムウェア（あとで説明する「身代金ウイルス」）の被害は123件でした。半年の件数としては、統計を取り始めてから最も多い数字です。</p>
+        <div class="stat-row" role="list">
+          <div class="stat" role="listitem"><strong>123件</strong><span>ランサムウェア被害<br>（2026年上半期・過去最多）</span></div>
+          <div class="stat" role="listitem"><strong>約6割</strong><span>被害にあったのは<br>中小企業</span></div>
+          <div class="stat" role="listitem"><strong>約5割</strong><span>入り口は<br>VPN機器</span></div>
+          <div class="stat" role="listitem"><strong>約73万件</strong><span>フィッシング詐欺の報告<br>（2026年上半期）</span></div>
+        </div>
+        <p class="fig-note">出典：警察庁「令和8年上半期におけるサイバー空間をめぐる脅威の情勢等について」</p>
+        <p>狙われているのは大企業だけではありません。被害の約6割は中小企業です。また、復旧に1,000万円以上かかった組織が約6割あり、元に戻るまで1か月以上かかるところも半分ほどあります。一度やられると、お金も時間も大きく失うのです。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>2026年の主な出来事</h2>
+        <p>報道や各社の発表から、目立ったものをいくつか挙げます（調査中のものもあり、内容は発表時点のものです）。</p>
+        <ul class="timeline">
+          <li><time>2月</time><span><strong>親ロシア派のハッカー集団</strong>が、政府や交通、金融機関のサイトに大量のアクセスを送りつけ、つながりにくくする攻撃（DDoS）を行いました。</span></li>
+          <li><time>8月</time><span><strong>REXT（WonderGOO・新星堂など）</strong>がランサムウェア被害にあい、店舗の休業や、決済・ポイント・通販の停止が起きました。</span></li>
+          <li><time>8〜9月</time><span><strong>両毛システムズ</strong>（自治体などのシステムを預かるIT会社）が侵入され、委託元の自治体やガス会社にも影響が広がりました。</span></li>
+          <li><time>9月</time><span><strong>京王グループ</strong>がランサムウェア被害を公表（鉄道の運行は継続）。<strong>タイムズカー</strong>では約660万件のアカウント情報が取られ、本人確認書類の画像を含むものもありました。<strong>デジタル庁</strong>でもVPNの弱点を突かれ、職員などの情報が漏れた可能性が公表されました。</span></li>
+          <li><time>10月</time><span><strong>大阪公立大学</strong>のシステムが止まり、授業に影響。クラウドサービスの<strong>IDCフロンティア</strong>でも仮想サーバーが止まり、多くの利用企業・自治体に影響が出たと報じられています。</span></li>
+        </ul>
+        <p>「お店」「交通」「大学」「役所」「クラウド」と、暮らしのあらゆる場所が狙われているのがわかります。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>攻撃の4つのタイプ</h2>
+        <p>ニュースでひとまとめに「サイバー攻撃」と呼ばれるものは、大きく分けると次の4つです。</p>
+        <div class="type-grid">
+          <div class="type-card"><p class="type-tag">止める・脅す</p><h3>ランサムウェア</h3><p>会社のデータを勝手に暗号化（鍵をかけて読めなく）し、「戻してほしければお金を払え」と脅します。いま一番被害が大きいタイプです。</p></div>
+          <div class="type-card"><p class="type-tag">盗む</p><h3>不正アクセス・情報漏えい</h3><p>システムの弱点やパスワードを悪用して入りこみ、会員の名前や住所、メールアドレスなどを盗み出します。</p></div>
+          <div class="type-card"><p class="type-tag">あふれさせる</p><h3>DDoS（ディードス）攻撃</h3><p>たくさんのパソコンから一斉にアクセスを送りつけ、サイトをパンクさせて見られなくします。</p></div>
+          <div class="type-card"><p class="type-tag">だます</p><h3>フィッシング詐欺</h3><p>本物そっくりのメールやSMSで偽サイトに誘い、IDやパスワード、カード番号を入力させます。</p></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>ランサムウェアの仕組み</h2>
+        <p>ランサムウェアの攻撃は、ある日突然始まるように見えて、実は何段階もの準備があります。</p>
+        <figure class="diagram">
+          <ol class="flow">
+            <li><strong>入りこむ</strong><span>VPN機器の弱点や、盗んだパスワードで社内のネットワークに入る</span></li>
+            <li><strong>広がる</strong><span>管理者の権限を奪い、社内のほかのパソコンやサーバーへ移っていく</span></li>
+            <li><strong>盗む</strong><span>大事なデータをこっそり外へ持ち出す</span></li>
+            <li><strong>鍵をかける</strong><span>データやバックアップを暗号化し、業務を止める</span></li>
+            <li class="hit"><strong>脅す</strong><span>「お金を払わないと、盗んだデータをネットにばらまく」と要求する</span></li>
+          </ol>
+          <figcaption>図1　ランサムウェア攻撃の流れ。最近は、暗号化せずに「盗んで脅すだけ」の手口（ノーウェアランサム）も増えています。</figcaption>
+        </figure>
+        <p>ポイントは、<strong>入り口の多くがVPN機器</strong>（社外から社内につなぐための機械）だということです。VPN機器のソフトを古いまま放っておくと、そこが鍵のかかっていない裏口になってしまいます。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>「取引先から」被害が広がる仕組み</h2>
+        <p>最近とくに目立つのが、<strong>サプライチェーン攻撃</strong>です。守りの固い大きな組織を直接狙うのではなく、そこと取引している小さな会社や、システムを預かっているIT会社を先に攻撃します。</p>
+        <figure class="diagram">
+          <ol class="flow chain">
+            <li><strong>攻撃者</strong><span>守りの弱いところを探す</span></li>
+            <li><strong>委託先・取引先</strong><span>システム運用を請け負うIT会社、データセンター、クラウドなど</span></li>
+            <li><strong>委託元</strong><span>自治体、病院、ガス会社、小売店など</span></li>
+            <li class="hit"><strong>私たち</strong><span>窓口やお店が止まる、個人情報が漏れる</span></li>
+          </ol>
+          <figcaption>図2　1社が破られると、その会社にシステムを任せている多くの組織にまで被害が連鎖します。</figcaption>
+        </figure>
+        <p>両毛システムズやIDCフロンティアの件のように、1か所が止まると何十、何百という組織に影響が出ます。「うちは小さい会社だから狙われない」ではなく、「小さい会社だからこそ入り口に使われる」と考える必要があります。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>国はどう動いているか</h2>
+        <p>日本政府は、これまでの「攻撃されてから対応する」守り方から、<strong>「攻撃される前に止める」能動的サイバー防御</strong>へと切りかえを進めています。</p>
+        <ul>
+          <li><strong>法律ができた：</strong>2025年5月に「サイバー対処能力強化法」などが成立しました。制度は2027年11月までに順番に始まる予定です。</li>
+          <li><strong>司令塔ができた：</strong>2025年7月、内閣サイバーセキュリティセンター（NISC）が「国家サイバー統括室」に生まれ変わり、国全体の対応をまとめる役になりました。</li>
+          <li><strong>官民で情報を共有：</strong>電気・ガス・鉄道・金融などの重要インフラの会社と国が協議会をつくり、攻撃の情報を共有します。</li>
+          <li><strong>攻撃元を止める：</strong>2026年10月1日から、警察や自衛隊が、攻撃に使われているサーバーにアクセスして無害化（攻撃できない状態に）する措置が取れるようになりました。</li>
+        </ul>
+        <p>通信の情報を国が使うことには、プライバシーの心配もあります。そのため、独立した「サイバー通信情報監理委員会」が使い方を監督するしくみになっています。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>企業はどう動いているか</h2>
+        <p>被害にあった会社の多くは、次のような対応をとっています。</p>
+        <ul>
+          <li>被害がわかった時点でネットワークを切り離し、被害の広がりを止める</li>
+          <li>警察や個人情報保護委員会に届け出て、専門会社と調査する</li>
+          <li>ネットから切り離したバックアップからデータを戻す</li>
+          <li>身代金は払わない（払っても戻る保証はなく、次の攻撃の資金になるため）</li>
+        </ul>
+        <p>一方で、まだ被害にあっていない会社にとって大切なのは「事前の備え」です。とくに中小企業は、専任の担当者がいないことが多く、VPN機器の更新やバックアップの点検が後回しになりがちです。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>これからの守り方</h2>
+        <p>完全に防ぐ方法はありません。でも、「入られにくくする」「入られても被害を小さくする」ことはできます。立場ごとに、今日からできることをまとめました。</p>
+        <figure class="diagram">
+          <div class="layer-grid">
+            <div class="layer"><h3>個人</h3><ul>
+              <li>メールやSMSのリンクから、ログインしない。公式アプリやブックマークから開く</li>
+              <li>パスワードを使い回さない</li>
+              <li>二段階認証（ログイン時のスマホ確認）をオンにする</li>
+              <li>スマホやパソコンの更新をすぐ入れる</li>
+            </ul></div>
+            <div class="layer"><h3>会社・お店</h3><ul>
+              <li>VPN機器・ルーターのソフトをすぐ更新する</li>
+              <li>バックアップを、ネットから切り離した場所にも取る</li>
+              <li>使っていないアカウントを消す</li>
+              <li>「やられたら誰に連絡するか」を紙に書いておく</li>
+            </ul></div>
+            <div class="layer"><h3>取引のつながり</h3><ul>
+              <li>システムを預けている会社の対策を確認する</li>
+              <li>取引先とのデータのやりとりは必要な分だけにする</li>
+              <li>業界や地域で情報を共有する</li>
+            </ul></div>
+          </div>
+          <figcaption>図3　立場ごとの守り方。どれも、特別な道具がなくても始められることばかりです。</figcaption>
+        </figure>
+        <p>もし「自分の情報が漏れたかもしれない」という通知が届いたら、まずそのサービスのパスワードを変え、同じパスワードを使っているほかのサービスも変えてください。そして、「漏えいのおわび」をよそおった詐欺メールにも気をつけてください。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>困ったら、相談してください</h2>
+        <p>ネットの被害は、「自分が悪かったのでは」とひとりで抱えこみがちです。でも、だまされた人が悪いのではありません。だます人が悪いのです。</p>
+        <ul>
+          <li><strong>詐欺や不正アクセスの被害：</strong>警察相談専用電話 <strong>#9110</strong>、または各都道府県警察のサイバー犯罪相談窓口</li>
+          <li><strong>セキュリティの困りごと：</strong>IPA（情報処理推進機構）「情報セキュリティ安心相談窓口」</li>
+          <li><strong>お金のトラブル：</strong>消費者ホットライン <strong>188</strong></li>
+        </ul>
+        <p>私はハードウェアからソフトウェアまで扱ってきた技術者です。会社のセキュリティの見直しなど、技術的なご相談は<a href="../ryokin.html">月額指導プラン・集中併走プラン</a>でお受けしています。「何から手をつければいいかわからない」という段階でも大丈夫です。</p>
+        <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSd4V7L7JFEnskQOpbKlRHCwiKqGPFUcnjzo59tYMj3PtOjkYA/viewform" target="_blank" rel="noopener">相談する（無料）</a>
+      </section>
+
+      <section class="article-section sources">
+        <h2>参考にした情報</h2>
+        <ul>
+          <li><a href="https://www.npa.go.jp/publications/statistics/cybersecurity/data/R8kami/R08_kami_cyber_jousei.pdf" target="_blank" rel="noopener">警察庁「令和8年上半期におけるサイバー空間をめぐる脅威の情勢等について」</a></li>
+          <li><a href="https://scan.netsecurity.ne.jp/article/2026/03/24/54888.html" target="_blank" rel="noopener">ScanNetSecurity「警察庁 令和7年 サイバー空間 脅威情勢」</a></li>
+          <li><a href="https://news.mynavi.jp/techplus/article/20260930-5050581/" target="_blank" rel="noopener">TECH+「2026年9月のサイバー攻撃・不正アクセスまとめ」</a></li>
+          <li><a href="https://rocket-boys.co.jp/security-measures-lab/2026-ransomware-attack-examples/" target="_blank" rel="noopener">セキュリティ対策Lab「2026年 ランサムウェアの事例」</a></li>
+          <li><a href="https://rocket-boys.co.jp/?p=30677" target="_blank" rel="noopener">セキュリティ対策Lab「能動的サイバー防御、2026年10月1日に無害化措置開始」</a></li>
+        </ul>
+        <p class="note">※ 各社の被害状況は、発表時点の情報です。調査が進むと内容が変わることがあります。</p>
+      </section>
+
+      <nav class="related" aria-label="コラム一覧へ">
+        <ul><li><a href="index.html">コラムの一覧にもどる</a></li><li><a href="../business/index.html">法人の方へ（Mother AI「the seed」）</a></li></ul>
+      </nav>
+    </div>
+  </article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© the weed ／ 窓口の電話番号は変わることがあります。最新の情報は各窓口の公式サイトでご確認ください。</p>
+  </div>
+</footer>
+<!--BODY-END-->
+</body>
+</html>
