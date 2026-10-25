@@ -12,6 +12,7 @@
 | `business/index.html` | 法人の方へ | 中小企業向けMother AI（相談後に見積書を送付） |
 | `seed.html` | the seed | the seed の部署ごとの機能と試作版の画面（画像は images/seed/） |
 | `flower.html` | the flower | 資格・勉強を支えるAIアプリ（開発中） |
+| `flower-demo.html` | （the flower の下） | the flower の試作版（問題はサンプル、記録はブラウザ内のみ） |
 | `circle.html` | サークル募集 | 一次創作の仲間募集 |
 | `column/index.html` | コラム | コラムの一覧（`column/template.html` が記事のひな形） |
 | `about.html` | 私たちについて | 企業理念、代表プロフィール |

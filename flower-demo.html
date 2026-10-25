@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>the flower 試作版｜the weed</title>
+<meta name="description" content="the flower の試作版。資格を選んで5問解くと、採点・復習・弱点マップまで試せます（問題はサンプルです）。">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+/* レイアウト: 1カラムの学習カード。上に資格プルダウンとタブ、下に今の画面。スマホの片手操作を基準にする */
+:root {
+  --bg: #f4f3ef;        /* 背景: 少し温かい灰色 */
+  --surface: #ffffff;   /* カードの面 */
+  --ink: #23201f;       /* 本文 */
+  --muted: #6a6461;     /* 補足 */
+  --line: #ddd8d2;      /* 線 */
+  --petal: #9c3f6e;     /* メイン: 花びらの紫紅 */
+  --petal-soft: #f3e4ec;
+  --leaf: #3d6b45;      /* 正解・よくできた */
+  --leaf-soft: #e1eadb;
+  --rust: #b0502b;      /* 不正解・弱点 */
+  --rust-soft: #f6e3da;
+  --sun: #b98113;       /* あやふや */
+  --sun-soft: #f6ecd3;
+  --font-display: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171516; --surface: #211e20; --ink: #ece7e8; --muted: #a9a1a4; --line: #3a3437;
+    --petal: #e08ab4; --petal-soft: #3a2531; --leaf: #8cbf8f; --leaf-soft: #223124;
+    --rust: #e8906b; --rust-soft: #3d2620; --sun: #e3b450; --sun-soft: #3a3020; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171516; --surface: #211e20; --ink: #ece7e8; --muted: #a9a1a4; --line: #3a3437;
+  --petal: #e08ab4; --petal-soft: #3a2531; --leaf: #8cbf8f; --leaf-soft: #223124;
+  --rust: #e8906b; --rust-soft: #3d2620; --sun: #e3b450; --sun-soft: #3a3020; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body);
+  font-size: 15px; line-height: 1.7;
+}
+.app {
+  max-width: 640px; margin: 0 auto;
+  padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 16px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.4; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--petal); outline-offset: 2px; }
+
+/* ヘッダー */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 700; font-size: 20px; }
+.brand svg { width: 28px; height: 28px; }
+.brand small { font-family: var(--font-body); font-weight: 400; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 0 8px; }
+.picker { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 220px; max-width: 320px; }
+.picker label { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+select {
+  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; padding: 8px 10px; width: 100%;
+}
+
+/* タブ */
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px; }
+.tabs button { border: 0; background: none; border-radius: 9px; padding: 8px 4px; font-weight: 700; font-size: 14px; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--petal-soft); color: var(--petal); }
+.tabs .count { display: inline-block; min-width: 1.6em; margin-left: 4px; font-size: 12px; border-radius: 99px; background: var(--rust); color: var(--surface); padding: 0 6px; font-variant-numeric: tabular-nums; }
+
+/* サンプル記録のお知らせ */
+.notice { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; background: var(--sun-soft); border-radius: 12px; padding: 10px 14px; font-size: 13px; }
+.notice p { min-width: 0; flex: 1 1 240px; }
+.link-btn { border: 0; background: none; color: var(--petal); text-decoration: underline; padding: 2px 0; font-size: 13px; font-weight: 700; }
+
+/* カード */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+.lead { color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--bg); border-radius: 10px; padding: 10px; text-align: center; }
+.stat b { display: block; font-family: var(--font-display); font-size: 24px; font-variant-numeric: tabular-nums; line-height: 1.3; }
+.stat span { font-size: 12px; color: var(--muted); }
+.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-weight: 700; font-size: 16px; background: var(--petal); color: var(--surface); width: 100%; }
+.btn.sub { background: var(--bg); color: var(--ink); border: 1px solid var(--line); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.row > * { flex: 1 1 160px; }
+.hint { font-size: 12px; color: var(--muted); }
+
+/* 問題 */
+.qhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.chip { display: inline-block; font-size: 12px; border-radius: 99px; padding: 1px 10px; background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.chip.review { background: var(--rust-soft); color: var(--rust); border-color: transparent; }
+.dots { display: flex; gap: 5px; }
+.dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.dots i.ok { background: var(--leaf); }
+.dots i.ng { background: var(--rust); }
+.dots i.now { background: var(--petal); }
+.question { font-size: 17px; font-weight: 700; line-height: 1.75; }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choice { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+.choice:hover:not(:disabled) { border-color: var(--petal); }
+.choice .no { font-family: var(--font-display); font-weight: 700; color: var(--muted); flex: none; width: 1.2em; }
+.choice:disabled { cursor: default; }
+.choice.correct { border-color: var(--leaf); background: var(--leaf-soft); }
+.choice.wrong { border-color: var(--rust); background: var(--rust-soft); }
+.choice.dim { opacity: .55; }
+.unsure { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+.unsure input { width: 18px; height: 18px; accent-color: var(--sun); }
+.result { border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+.result.ok { background: var(--leaf-soft); }
+.result.ng { background: var(--rust-soft); }
+.result h3 { font-size: 16px; }
+.result.ok h3 { color: var(--leaf); }
+.result.ng h3 { color: var(--rust); }
+.result .next-due { font-size: 12px; color: var(--muted); }
+
+/* 弱点マップ */
+.bars { display: flex; flex-direction: column; gap: 14px; }
+.bar-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; }
+.bar-row .name { font-weight: 700; min-width: 0; }
+.bar-row .pct { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; }
+.bar-row .track { grid-column: 1 / -1; height: 10px; border-radius: 99px; background: var(--bg); overflow: hidden; display: flex; }
+.bar-row .track .sure { background: var(--leaf); }
+.bar-row .track .shaky { background: var(--sun); }
+.bar-row .meta { grid-column: 1 / -1; font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.tag { font-size: 11px; font-weight: 700; border-radius: 99px; padding: 0 8px; }
+.tag.weak { background: var(--rust-soft); color: var(--rust); }
+.tag.mid { background: var(--sun-soft); color: var(--sun); }
+.tag.good { background: var(--leaf-soft); color: var(--leaf); }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.miss-list { display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.miss-list li { border-top: 1px solid var(--line); padding-top: 8px; display: flex; flex-direction: column; gap: 2px; }
+.miss-list li:first-child { border-top: 0; padding-top: 0; }
+.miss-list .q { font-size: 14px; }
+.miss-list .m { font-size: 12px; color: var(--muted); }
+
+/* 復習のしくみ */
+.boxes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.box { background: var(--bg); border-radius: 10px; padding: 8px 4px; text-align: center; }
+.box b { display: block; font-family: var(--font-display); font-size: 20px; font-variant-numeric: tabular-nums; }
+.box span { font-size: 11px; color: var(--muted); display: block; line-height: 1.4; }
+.box.due { background: var(--rust-soft); }
+.back { font-size: 13px; }
+.back a { color: var(--petal); }
+footer { font-size: 12px; color: var(--muted); text-align: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: rise .25s ease-out; }
+  @keyframes rise { from { transform: translateY(6px); } to { transform: none; } }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <p class="back"><a href="flower.html">← the flower のページへ戻る</a></p>
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="9" r="5" fill="var(--petal)" opacity=".85"/>
+        <circle cx="10" cy="14" r="5" fill="var(--petal)" opacity=".7"/>
+        <circle cx="22" cy="14" r="5" fill="var(--petal)" opacity=".7"/>
+        <circle cx="16" cy="13" r="2.6" fill="var(--sun)"/>
+        <path d="M16 18v11" stroke="var(--leaf)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M16 25c-3-.4-5-2.2-6-4.6 3 .2 5 1.8 6 4.6z" fill="var(--leaf)"/>
+      </svg>
+      the flower <small>試作版</small>
+    </div>
+    <div class="picker">
+      <label for="cert">勉強する資格</label>
+      <select id="cert"></select>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="画面の切り替え">
+    <button role="tab" id="tab-study" data-view="study">きょうの5問</button>
+    <button role="tab" id="tab-review" data-view="review">復習<span class="count" id="due-count" hidden></span></button>
+    <button role="tab" id="tab-weak" data-view="weak">弱点マップ</button>
+  </nav>
+
+  <div class="notice" id="demo-notice" hidden>
+    <p>いま表示しているのは、動きを見ていただくための<b>お試し用の学習記録</b>です。</p>
+    <span id="reset-area"><button class="link-btn" id="reset-btn">記録を消して最初から始める</button></span>
+  </div>
+
+  <main id="view"></main>
+
+  <footer>問題はすべて試作用のサンプルです。記録はこのブラウザの中だけに保存されます。</footer>
+</div>
+
+<script>
+// ===== 資格と問題（試作用サンプル） =====
+// 本番では、ここをデータベースから読み込む形に変えます。
+const CERTS = [
+  { id: "itpass", name: "ITパスポート", cats: ["経営戦略", "プロジェクト管理", "ネットワーク", "セキュリティ"], qs: [
+    { id: "i1", cat: "セキュリティ", q: "実在の会社をよそおったメールで偽のサイトに誘導し、IDやパスワードを盗み取る手口はどれ？", c: ["フィッシング", "DoS攻撃", "ランサムウェア", "ショルダーハッキング"], a: 0, e: "フィッシングは「釣り」が語源です。DoS攻撃はサーバーに大量のアクセスを送って止める攻撃、ランサムウェアはデータを使えなくして身代金を求める不正なプログラムです。" },
+    { id: "i2", cat: "セキュリティ", q: "次のうち「二要素認証」にあたる組み合わせはどれ？", c: ["パスワードと秘密の質問", "パスワードとスマホに届く確認コード", "指紋と顔", "長くて複雑なパスワード"], a: 1, e: "知っているもの（パスワード）と持っているもの（スマホ）のように、種類のちがう要素を2つ使うのが二要素認証です。パスワードと秘密の質問はどちらも「知っているもの」なので一要素です。" },
+    { id: "i3", cat: "セキュリティ", q: "情報セキュリティの3要素のうち「必要なときに、いつでも情報やシステムを使える状態」を表すものはどれ？", c: ["機密性", "完全性", "可用性", "真正性"], a: 2, e: "3要素は機密性（見てよい人だけが見られる）、完全性（内容が正しく改ざんされていない）、可用性（いつでも使える）です。" },
+    { id: "i4", cat: "ネットワーク", q: "「example.com」のようなドメイン名を、IPアドレスに変換するしくみはどれ？", c: ["DHCP", "DNS", "NAT", "SMTP"], a: 1, e: "DNSはインターネットの電話帳のような役割です。DHCPはIPアドレスを自動で割り当てるしくみ、NATはアドレスを変換して1つの回線を共有するしくみです。" },
+    { id: "i5", cat: "ネットワーク", q: "電子メールを「送信する」ときに使われるプロトコルはどれ？", c: ["POP3", "IMAP", "SMTP", "FTP"], a: 2, e: "送信はSMTPです。POP3とIMAPはメールを受信するためのプロトコル、FTPはファイルを転送するためのプロトコルです。" },
+    { id: "i6", cat: "経営戦略", q: "SWOT分析の「O」が表すものはどれ？", c: ["自社の強み", "自社の弱み", "外部環境の機会", "外部環境の脅威"], a: 2, e: "S＝強み、W＝弱み（ここまでが内部環境）、O＝機会、T＝脅威（ここが外部環境）です。O は Opportunity の頭文字です。" },
+    { id: "i7", cat: "経営戦略", q: "PDCAサイクルの「C」で行うことはどれ？", c: ["計画を立てる", "計画どおり実行する", "結果を評価する", "改善策を実施する"], a: 2, e: "Plan（計画）→ Do（実行）→ Check（評価）→ Act（改善）の順にくり返します。" },
+    { id: "i8", cat: "プロジェクト管理", q: "プロジェクトの作業を、細かい単位まで階層的に分解して整理した図を何という？", c: ["WBS", "ガントチャート", "PERT図", "パレート図"], a: 0, e: "WBS（Work Breakdown Structure）は作業の分解図です。ガントチャートは作業の予定と進み具合を横棒で表す表です。" },
+    { id: "i9", cat: "プロジェクト管理", q: "「クリティカルパス」の説明として正しいものはどれ？", c: ["費用がいちばんかかる作業の流れ", "遅れるとプロジェクト全体が遅れる作業の流れ", "担当者がいちばん多い作業の流れ", "最初に着手する作業"], a: 1, e: "クリティカルパスは、開始から終了までで最も時間がかかる経路です。ここに余裕はないため、1日遅れると全体も1日遅れます。" }
+  ]},
+  { id: "boki3", name: "日商簿記3級", cats: ["勘定科目", "仕訳", "決算"], qs: [
+    { id: "b1", cat: "勘定科目", q: "商品を売って、代金をあとで受け取る約束をしたときの「受け取る権利」を表す勘定科目はどれ？", c: ["買掛金", "売掛金", "前受金", "未払金"], a: 1, e: "売ったのにまだもらっていないお金が売掛金（資産）です。買ったのにまだ払っていないお金は買掛金（負債）です。" },
+    { id: "b2", cat: "勘定科目", q: "次のうち「資産」に分類される勘定科目はどれ？", c: ["買掛金", "借入金", "現金", "資本金"], a: 2, e: "現金は資産です。買掛金と借入金は返さなければならない負債、資本金は純資産です。" },
+    { id: "b3", cat: "勘定科目", q: "借方（左側）に記入すると「増える」のはどのグループ？", c: ["費用", "負債", "収益", "純資産"], a: 0, e: "資産と費用は借方で増えます。負債・純資産・収益は貸方（右側）で増えます。" },
+    { id: "b4", cat: "仕訳", q: "商品10,000円を仕入れ、代金は現金で支払った（三分法）。正しい仕訳はどれ？", c: ["（借）現金 10,000 ／（貸）仕入 10,000", "（借）仕入 10,000 ／（貸）現金 10,000", "（借）商品 10,000 ／（貸）売上 10,000", "（借）仕入 10,000 ／（貸）買掛金 10,000"], a: 1, e: "費用である仕入が増えたので借方へ、資産である現金が減ったので貸方へ書きます。代金をあとで払う場合は貸方が買掛金になります。" },
+    { id: "b5", cat: "仕訳", q: "銀行から500,000円を借り入れ、普通預金に入金された。正しい仕訳はどれ？", c: ["（借）借入金 500,000 ／（貸）普通預金 500,000", "（借）普通預金 500,000 ／（貸）借入金 500,000", "（借）普通預金 500,000 ／（貸）資本金 500,000", "（借）現金 500,000 ／（貸）借入金 500,000"], a: 1, e: "資産（普通預金）が増えたので借方、負債（借入金）が増えたので貸方です。" },
+    { id: "b6", cat: "仕訳", q: "売掛金30,000円を現金で回収した。正しい仕訳はどれ？", c: ["（借）現金 30,000 ／（貸）売掛金 30,000", "（借）売掛金 30,000 ／（貸）現金 30,000", "（借）現金 30,000 ／（貸）売上 30,000", "（借）売上 30,000 ／（貸）売掛金 30,000"], a: 0, e: "現金（資産）が増えて借方、売掛金（資産）が減って貸方です。売上はすでに売ったときに記録済みなので、ここでは使いません。" },
+    { id: "b7", cat: "決算", q: "建物や備品の価値が年々減る分を、費用として計上する決算の手続きはどれ？", c: ["減価償却", "貸倒引当", "売上原価の計算", "前払費用の計上"], a: 0, e: "減価償却は、長く使う資産の取得にかかったお金を、使う期間に分けて費用にする手続きです。" },
+    { id: "b8", cat: "決算", q: "「貸倒引当金」を設定する目的はどれ？", c: ["借入金の返済に備える", "売掛金などが回収できなくなる場合に備える", "商品の値下がりに備える", "税金の支払いに備える"], a: 1, e: "取引先の倒産などで売掛金が回収できなくなる見込み額を、前もって費用として見積もっておくのが貸倒引当金です。" }
+  ]},
+  { id: "takken", name: "宅建士", cats: ["権利関係", "宅建業法", "法令上の制限", "税・その他"], qs: [
+    { id: "t1", cat: "宅建業法", q: "宅建業者は、事務所ごとに、業務に従事する人の何人に1人以上の割合で専任の宅建士を置かなければならない？", c: ["3人に1人", "5人に1人", "10人に1人", "20人に1人"], a: 1, e: "事務所では5人に1人以上の割合で専任の宅建士が必要です。数字は試験でよく問われます。" },
+    { id: "t2", cat: "宅建業法", q: "重要事項の説明は、いつまでに行う必要がある？", c: ["物件の広告を出す前", "契約が成立するまでの間", "引き渡しのとき", "契約から1週間以内"], a: 1, e: "重要事項の説明は、契約が成立するまでの間に、宅建士が宅建士証を示して行います。" },
+    { id: "t3", cat: "宅建業法", q: "宅建業者が売主、宅建業者でない人が買主の売買で、受け取れる手付の上限はどれ？", c: ["代金の1/10", "代金の2/10", "代金の3/10", "上限はない"], a: 1, e: "宅建業者が自ら売主となるときは、代金の10分の2を超える手付を受け取れません。" },
+    { id: "t4", cat: "権利関係", q: "未成年者が法定代理人の同意を得ずに結んだ契約は、原則としてどうなる？", c: ["最初から無効", "取り消すことができる", "必ず有効", "裁判所の許可で有効"], a: 1, e: "未成年者が同意なしに行った契約は、原則として取り消すことができます。取り消すまでは有効なので「無効」とはちがいます。" },
+    { id: "t5", cat: "権利関係", q: "他人の土地を、所有の意思をもって平穏・公然に占有し、始めたときに善意・無過失だった。何年で取得時効が成立する？", c: ["5年", "10年", "15年", "20年"], a: 1, e: "善意・無過失で占有を始めたなら10年、そうでなければ20年で取得時効が成立します。" },
+    { id: "t6", cat: "法令上の制限", q: "低層住宅の良好な住環境を守るために定められる用途地域はどれ？", c: ["第一種低層住居専用地域", "準住居地域", "近隣商業地域", "準工業地域"], a: 0, e: "第一種低層住居専用地域は、高さの低い住宅が中心の、最も規制が厳しい住居系の地域です。" },
+    { id: "t7", cat: "法令上の制限", q: "「建ぺい率」の説明として正しいものはどれ？", c: ["延べ面積の敷地面積に対する割合", "建築面積の敷地面積に対する割合", "建物の高さの道路幅に対する割合", "緑地の敷地面積に対する割合"], a: 1, e: "建ぺい率は「建築面積 ÷ 敷地面積」です。「延べ面積 ÷ 敷地面積」は容積率なので、混同に注意しましょう。" },
+    { id: "t8", cat: "税・その他", q: "不動産取得税を課すのはどこ？", c: ["国", "都道府県", "市町村", "税務署"], a: 1, e: "不動産取得税は都道府県が課す地方税です。毎年かかる固定資産税は市町村が課します。" }
+  ]}
+];
+// 準備中の資格（プルダウンで「これから増える」ことを見せるため）
+const COMING = ["FP3級", "基本情報技術者", "衛生管理者", "TOEIC L&R"];
+
+// ===== 復習のしくみ（間隔反復） =====
+// 正解するたびに「箱」が1つ進み、次に出題されるまでの間隔がのびます。
+// まちがえたら箱1に戻り、すぐ復習に入ります。
+const INTERVAL_DAYS = [0, 1, 3, 7, 14]; // 箱1〜5で、次に出すまでの日数
+const BOX_LABEL = ["すぐ", "1日後", "3日後", "1週間後", "2週間後"];
+const DAY = 24 * 60 * 60 * 1000;
+const SESSION_SIZE = 5;
+const STORE_KEY = "flower.v1";
+
+// ===== 保存（このブラウザの中だけ） =====
+function load() {
+  try { const raw = localStorage.getItem(STORE_KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+  return null;
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+// お試し用の学習記録。分野ごとに得意・不得意の差がつくように作っています。
+function makeDemo() {
+  const weakness = { // 分野ごとの [正解数, 自信なしの正解数]（各問2回解いた想定）
+    "セキュリティ": [0, 1], "ネットワーク": [1, 1], "経営戦略": [2, 0], "プロジェクト管理": [2, 1],
+    "勘定科目": [2, 0], "仕訳": [0, 1], "決算": [1, 1],
+    "宅建業法": [1, 1], "権利関係": [2, 1], "法令上の制限": [0, 0], "税・その他": [2, 0]
+  };
+  const now = Date.now();
+  const records = {};
+  CERTS.forEach(cert => {
+    records[cert.id] = {};
+    cert.qs.forEach((q, i) => {
+      if (i % 4 === 3) return; // いくつかは「まだ解いていない問題」として残す
+      const [ok, shaky] = weakness[q.cat] || [1, 0];
+      const lastOk = ok > 0 && (i + ok) % 2 === 0 ? true : ok === 2;
+      records[cert.id][q.id] = {
+        box: lastOk ? Math.min(ok + 1, 4) : 0,
+        due: lastOk ? now + INTERVAL_DAYS[Math.min(ok + 1, 4)] * DAY : now - 1000,
+        tries: 2, ok, shaky: Math.min(shaky, ok), lastOk
+      };
+    });
+  });
+  return { cert: "itpass", demo: true, records };
+}
+
+let state = load() || makeDemo();
+if (!state.records) state.records = {};
+let view = "study";
+let session = null; // いま解いている5問の情報
+
+const $ = s => document.querySelector(s);
+const certOf = () => CERTS.find(c => c.id === state.cert) || CERTS[0];
+const recs = () => (state.records[certOf().id] ||= {});
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+function dueQuestions() {
+  const now = Date.now(), r = recs();
+  return certOf().qs.filter(q => r[q.id] && r[q.id].due <= now);
+}
+
+// 分野ごとの理解度 = (自信ありの正解 + 自信なしの正解 × 0.5) ÷ 解いた回数
+function categoryStats() {
+  const cert = certOf(), r = recs();
+  return cert.cats.map(cat => {
+    let tries = 0, ok = 0, shaky = 0, seen = 0;
+    const qs = cert.qs.filter(q => q.cat === cat);
+    qs.forEach(q => { const x = r[q.id]; if (x) { seen++; tries += x.tries; ok += x.ok; shaky += x.shaky; } });
+    const sure = ok - shaky;
+    const score = tries ? (sure + shaky * 0.5) / tries : null;
+    return { cat, tries, ok, shaky, sure, seen, total: qs.length, score };
+  });
+}
+
+// 5問の選び方: ①復習の時期が来た問題 → ②弱い分野の未出題 → ③そのほか
+function pickQuestions(mode, focusCat) {
+  const cert = certOf(), r = recs(), now = Date.now();
+  let pool = cert.qs.slice();
+  if (focusCat) pool = pool.filter(q => q.cat === focusCat);
+  const scoreOf = {};
+  categoryStats().forEach(s => scoreOf[s.cat] = s.score === null ? 0.5 : s.score);
+  const due = pool.filter(q => r[q.id] && r[q.id].due <= now).sort((a, b) => r[a.id].due - r[b.id].due);
+  if (mode === "review") return due.slice(0, SESSION_SIZE);
+  const fresh = pool.filter(q => !r[q.id]).sort((a, b) => scoreOf[a.cat] - scoreOf[b.cat]);
+  const rest = pool.filter(q => r[q.id] && r[q.id].due > now).sort((a, b) => r[a.id].due - r[b.id].due);
+  return [...due, ...fresh, ...rest].slice(0, SESSION_SIZE);
+}
+
+function startSession(mode, focusCat) {
+  const qs = pickQuestions(mode, focusCat);
+  if (!qs.length) return;
+  const r = recs(), now = Date.now();
+  session = { mode, focusCat, qs, idx: 0, answers: [], picked: null, unsure: false,
+    wasDue: qs.map(q => !!(r[q.id] && r[q.id].due <= now)) };
+  render();
+}
+
+// 採点して、記録と次の復習日を更新する
+function answer(choiceIdx) {
+  const q = session.qs[session.idx];
+  const correct = choiceIdx === q.a;
+  const unsure = $("#unsure") ? $("#unsure").checked : false;
+  const r = recs();
+  const x = r[q.id] || { box: 0, due: 0, tries: 0, ok: 0, shaky: 0 };
+  x.tries++;
+  if (correct) {
+    x.ok++;
+    if (unsure) x.shaky++;
+    // 自信がないときは箱を進めない（同じ間隔でもう一度）
+    x.box = unsure ? Math.max(x.box, 1) : Math.min(x.box + 1, INTERVAL_DAYS.length - 1);
+  } else {
+    x.box = 0;
+  }
+  x.lastOk = correct;
+  x.due = Date.now() + INTERVAL_DAYS[x.box] * DAY;
+  r[q.id] = x;
+  session.picked = choiceIdx;
+  session.unsure = unsure;
+  session.answers.push({ q, correct, unsure, box: x.box });
+  save();
+  render();
+}
+
+function next() {
+  session.idx++;
+  session.picked = null;
+  session.unsure = false;
+  render();
+}
+
+// ===== 画面づくり =====
+function render() {
+  // タブ
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === view)));
+  const dueN = dueQuestions().length;
+  const dc = $("#due-count"); dc.hidden = !dueN; dc.textContent = dueN;
+  $("#demo-notice").hidden = !state.demo;
+
+  const el = $("#view");
+  if (session) el.innerHTML = session.idx < session.qs.length ? quizHTML() : summaryHTML();
+  else if (view === "study") el.innerHTML = studyHTML();
+  else if (view === "review") el.innerHTML = reviewHTML();
+  else el.innerHTML = weakHTML();
+}
+
+function studyHTML() {
+  const cert = certOf(), r = recs();
+  const seen = cert.qs.filter(q => r[q.id]).length;
+  const dueN = dueQuestions().length;
+  const stats = categoryStats().filter(s => s.score !== null).sort((a, b) => a.score - b.score);
+  const weakest = stats[0];
+  return `<section class="card">
+    <p class="eyebrow">${esc(cert.name)}｜隙間時間に1セット約3分</p>
+    <h2>きょうの5問</h2>
+    <p class="lead">復習の時期が来た問題を先に、そのあと苦手な分野の問題を多めに出します。</p>
+    <div class="stats">
+      <div class="stat"><b>${dueN}</b><span>復習待ち</span></div>
+      <div class="stat"><b>${seen}<small style="font-size:13px">／${cert.qs.length}</small></b><span>解いた問題</span></div>
+      <div class="stat"><b>${weakest ? esc(weakest.cat) : "—"}</b><span>いちばんの弱点</span></div>
+    </div>
+    <button class="btn" data-act="start">5問はじめる</button>
+    ${weakest ? `<button class="btn sub" data-act="focus" data-cat="${esc(weakest.cat)}">弱点「${esc(weakest.cat)}」だけを練習する</button>` : ""}
+  </section>`;
+}
+
+function quizHTML() {
+  const s = session, q = s.qs[s.idx], done = s.picked !== null;
+  const dots = s.qs.map((_, i) => {
+    const a = s.answers[i];
+    return `<i class="${a ? (a.correct ? "ok" : "ng") : i === s.idx ? "now" : ""}"></i>`;
+  }).join("");
+  const choices = q.c.map((t, i) => {
+    let cls = "choice";
+    if (done) cls += i === q.a ? " correct" : i === s.picked ? " wrong" : " dim";
+    return `<button class="${cls}" data-act="answer" data-i="${i}" ${done ? "disabled" : ""}><span class="no">${"アイウエ"[i]}</span><span>${esc(t)}</span></button>`;
+  }).join("");
+  let result = "";
+  if (done) {
+    const a = s.answers[s.answers.length - 1];
+    const title = a.correct ? (a.unsure ? "正解（でも、あやふや）" : "正解！") : `不正解　正解は「${"アイウエ"[q.a]}」`;
+    const dueText = a.box === 0 ? "このあと復習に入ります" : `次の復習は${BOX_LABEL[a.box]}`;
+    result = `<div class="result ${a.correct ? "ok" : "ng"}" role="status">
+      <h3>${title}</h3><p>${esc(q.e)}</p><p class="next-due">${dueText}</p></div>
+      <button class="btn" data-act="next">${s.idx + 1 < s.qs.length ? "次の問題へ" : "結果を見る"}</button>`;
+  }
+  return `<section class="card">
+    <div class="qhead">
+      <div class="row" style="flex:0 1 auto;gap:6px">
+        <span class="chip">${esc(q.cat)}</span>
+        ${s.wasDue[s.idx] ? `<span class="chip review">復習</span>` : ""}
+      </div>
+      <div class="dots" aria-label="${s.idx + 1}問目／${s.qs.length}問">${dots}</div>
+    </div>
+    <p class="question">${esc(q.q)}</p>
+    <div class="choices">${choices}</div>
+    ${done ? "" : `<label class="unsure"><input type="checkbox" id="unsure"> 自信がない（当てずっぽう）</label>`}
+    ${result}
+    ${done ? "" : `<button class="link-btn" data-act="quit" style="align-self:flex-start">中断する</button>`}
+  </section>`;
+}
+
+function summaryHTML() {
+  const a = session.answers;
+  const ok = a.filter(x => x.correct).length;
+  const shaky = a.filter(x => x.correct && x.unsure).length;
+  const miss = {};
+  a.filter(x => !x.correct || x.unsure).forEach(x => miss[x.q.cat] = (miss[x.q.cat] || 0) + 1);
+  const missText = Object.keys(miss).length
+    ? Object.entries(miss).sort((p, q) => q[1] - p[1]).map(([c, n]) => `${esc(c)}（${n}問）`).join("、")
+    : "なし。この調子です！";
+  const reviewNow = a.filter(x => !x.correct).length;
+  return `<section class="card">
+    <p class="eyebrow">${esc(certOf().name)}｜${session.mode === "review" ? "復習" : session.focusCat ? `「${esc(session.focusCat)}」集中練習` : "きょうの5問"}の結果</p>
+    <h2>${a.length}問中 ${ok}問 正解</h2>
+    <div class="stats">
+      <div class="stat"><b style="color:var(--leaf)">${ok - shaky}</b><span>自信ありで正解</span></div>
+      <div class="stat"><b style="color:var(--sun)">${shaky}</b><span>あやふやな正解</span></div>
+      <div class="stat"><b style="color:var(--rust)">${a.length - ok}</b><span>不正解</span></div>
+    </div>
+    <p><b>見直したい分野：</b>${missText}</p>
+    <p class="hint">まちがえた問題と、あやふやだった問題は、復習タブにまた出てきます。</p>
+    <div class="row">
+      ${reviewNow ? `<button class="btn" data-act="review-now">まちがえた${reviewNow}問をすぐ復習</button>` : ""}
+      <button class="btn sub" data-act="to-weak">弱点マップを見る</button>
+      <button class="btn sub" data-act="home">はじめの画面へ</button>
+    </div>
+  </section>`;
+}
+
+function reviewHTML() {
+  const cert = certOf(), r = recs(), now = Date.now();
+  const due = dueQuestions();
+  const boxes = INTERVAL_DAYS.map((_, b) => cert.qs.filter(q => r[q.id] && r[q.id].box === b).length);
+  const nextDue = cert.qs.filter(q => r[q.id] && r[q.id].due > now).map(q => r[q.id].due).sort((a, b) => a - b)[0];
+  const nextText = nextDue ? `次に復習の時期が来るのは ${new Date(nextDue).toLocaleDateString("ja-JP", { month: "long", day: "numeric" })} です。` : "";
+  return `<section class="card">
+    <p class="eyebrow">${esc(cert.name)}｜忘れかけたころに、もう一度</p>
+    <h2>${due.length ? `いま復習する問題が ${due.length}問 あります` : "いま復習する問題はありません"}</h2>
+    <p class="lead">${due.length ? "まちがえた問題や、前に解いてから時間がたった問題です。" : `よくできています。${nextText}`}</p>
+    <button class="btn" data-act="review" ${due.length ? "" : "disabled"}>復習をはじめる</button>
+  </section>
+  <section class="card">
+    <h3>復習のしくみ</h3>
+    <p class="hint">問題は5つの「箱」に入っています。正解するたびに右の箱へ進み、次に出る日がのびます。まちがえると左はしの箱に戻ります。</p>
+    <div class="boxes">${boxes.map((n, b) => `<div class="box ${b === 0 && n ? "due" : ""}"><b>${n}</b><span>箱${b + 1}<br>${BOX_LABEL[b]}</span></div>`).join("")}</div>
+  </section>`;
+}
+
+function weakHTML() {
+  const cert = certOf(), r = recs();
+  const stats = categoryStats().sort((a, b) => (a.score ?? 2) - (b.score ?? 2));
+  const bars = stats.map(s => {
+    if (s.score === null) return `<div class="bar-row"><span class="name">${esc(s.cat)}</span><span class="pct">—</span>
+      <div class="track"></div><div class="meta"><span>まだ解いていません（${s.total}問）</span></div></div>`;
+    const pct = Math.round(s.score * 100);
+    const tag = pct < 50 ? `<span class="tag weak">弱点</span>` : pct < 75 ? `<span class="tag mid">もう少し</span>` : `<span class="tag good">得意</span>`;
+    return `<div class="bar-row">
+      <span class="name">${esc(s.cat)} ${tag}</span><span class="pct">${pct}%</span>
+      <div class="track"><span class="sure" style="width:${s.sure / s.tries * 100}%"></span><span class="shaky" style="width:${s.shaky / s.tries * 100}%"></span></div>
+      <div class="meta"><span>解いた回数 ${s.tries}・正解 ${s.ok}（うちあやふや ${s.shaky}）</span>
+        <button class="link-btn" data-act="focus" data-cat="${esc(s.cat)}">この分野を練習</button></div>
+    </div>`;
+  }).join("");
+  const missed = cert.qs.filter(q => r[q.id] && r[q.id].tries > r[q.id].ok - r[q.id].shaky * 0.5)
+    .map(q => ({ q, x: r[q.id], miss: r[q.id].tries - r[q.id].ok + r[q.id].shaky * 0.5 }))
+    .sort((a, b) => b.miss - a.miss).slice(0, 4);
+  const missList = missed.length ? missed.map(({ q, x }) =>
+    `<li><span class="q">${esc(q.q)}</span><span class="m">${esc(q.cat)}・${x.tries}回中 ${x.ok}回正解${x.shaky ? `（あやふや ${x.shaky}）` : ""}</span></li>`).join("")
+    : `<li><span class="m">まだありません。</span></li>`;
+  return `<section class="card">
+    <p class="eyebrow">${esc(cert.name)}｜分野ごとの理解度</p>
+    <h2>弱点マップ</h2>
+    <p class="hint">理解度は、自信をもって正解した問題を1、あやふやな正解を0.5として計算しています。低い分野から順に並んでいます。</p>
+    <div class="legend"><span><i style="background:var(--leaf)"></i>自信ありの正解</span><span><i style="background:var(--sun)"></i>あやふやな正解</span><span><i style="background:var(--bg);border:1px solid var(--line)"></i>不正解</span></div>
+    <div class="bars">${bars}</div>
+  </section>
+  <section class="card">
+    <h3>つまずきやすい問題</h3>
+    <ul class="miss-list">${missList}</ul>
+  </section>`;
+}
+
+// ===== 操作 =====
+function setupPicker() {
+  const sel = $("#cert");
+  sel.innerHTML = CERTS.map(c => `<option value="${c.id}">${esc(c.name)}（サンプル ${c.qs.length}問）</option>`).join("")
+    + `<optgroup label="これから追加">${COMING.map(n => `<option disabled>${esc(n)}（準備中）</option>`).join("")}</optgroup>`;
+  sel.value = certOf().id;
+  sel.addEventListener("change", () => { state.cert = sel.value; session = null; save(); render(); });
+}
+
+document.querySelector(".tabs").addEventListener("click", e => {
+  const b = e.target.closest("button[data-view]"); if (!b) return;
+  view = b.dataset.view; session = null; render();
+});
+
+$("#view").addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  if (act === "start") startSession("study");
+  else if (act === "focus") startSession("study", b.dataset.cat);
+  else if (act === "review" || act === "review-now") startSession("review");
+  else if (act === "answer") answer(Number(b.dataset.i));
+  else if (act === "next") next();
+  else if (act === "quit") { session = null; render(); }
+  else if (act === "to-weak") { session = null; view = "weak"; render(); }
+  else if (act === "home") { session = null; view = "study"; render(); }
+});
+
+// 記録のリセット（確認つき）
+$("#reset-area").addEventListener("click", e => {
+  const area = $("#reset-area");
+  if (e.target.id === "reset-btn") {
+    area.innerHTML = `本当に消しますか？ <button class="link-btn" id="reset-yes">消す</button>　<button class="link-btn" id="reset-no">やめる</button>`;
+  } else if (e.target.id === "reset-yes") {
+    state = { cert: state.cert, demo: false, records: {} };
+    session = null; save(); render();
+    area.innerHTML = `<button class="link-btn" id="reset-btn">記録を消して最初から始める</button>`;
+  } else if (e.target.id === "reset-no") {
+    area.innerHTML = `<button class="link-btn" id="reset-btn">記録を消して最初から始める</button>`;
+  }
+});
+
+setupPicker();
+render();
+</script>
+</body>
+</html>
