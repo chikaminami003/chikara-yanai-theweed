@@ -568,7 +568,7 @@ section.block .column-list h2 { font-size: 1.15rem; margin: 0 0 4px; }
 .seed-points strong { display: block; color: var(--leaf); margin-bottom: 4px; }
 .small-budget { border-top: 1px solid var(--line); }
 .small-budget .lead { color: var(--muted); max-width: 40em; margin: 0 0 24px; }
-.small-budget .entry-card h2 { font-size: 1.3rem; margin: 0; }
+section.block .entry-card h2 { font-size: 1.3rem; margin: 0; }
 @media (max-width: 800px) { .seed-hero-grid { grid-template-columns: 1fr; gap: 24px; } }
 
 /* ---------- フッター ---------- */
