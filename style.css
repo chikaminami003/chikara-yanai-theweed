@@ -571,6 +571,9 @@ section.block .column-list h2 { font-size: 1.15rem; margin: 0 0 4px; }
 section.block .entry-card h2 { font-size: 1.3rem; margin: 0; }
 @media (max-width: 800px) { .seed-hero-grid { grid-template-columns: 1fr; gap: 24px; } }
 
+.office { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; }
+.office strong { color: var(--ink); margin-right: 1em; }
+
 /* ---------- フッター ---------- */
 .site-footer {
   padding-block: 32px 48px;
