@@ -576,6 +576,13 @@ section.block .entry-card h2 { font-size: 1.3rem; margin: 0; }
 .office a { word-break: break-all; }
 .office strong { color: var(--ink); margin-right: 1em; }
 
+/* ---------- 料金ページ ---------- */
+.counsel-fee { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.counsel-fee > div:last-child { flex: 1 1 260px; min-width: 0; }
+.counsel-icons { display: flex; gap: 8px; }
+.counsel-icons img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--surface); }
+#kojin, #consulting, #seed { scroll-margin-top: 120px; }
+
 /* ---------- フッター ---------- */
 .site-footer {
   padding-block: 32px 48px;
