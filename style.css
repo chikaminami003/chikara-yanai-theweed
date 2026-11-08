@@ -584,6 +584,7 @@ section.block .column-list h2 { font-size: 1.15rem; margin: 0 0 4px; }
 .seed-index a:hover { border-color: var(--leaf); color: var(--leaf); }
 .seed-dept { border-top: 1px solid var(--line); scroll-margin-top: 120px; }
 .seed-dept .check-list { margin-bottom: 8px; }
+.seed-dept h3 { margin: 28px 0 8px; font-size: 1.1rem; color: var(--leaf); }
 .seed-api { font-size: 0.88rem; color: var(--sun); margin: 12px 0 0; max-width: 46em; }
 .seed-notice { border: 1px dashed var(--line); border-radius: var(--radius); padding: 16px 20px; color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; max-width: 46em; }
 .seed-notice p { margin: 0; }

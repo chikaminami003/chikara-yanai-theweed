@@ -254,6 +254,22 @@ td.num { white-space: nowrap; }
 .cal-todo { color: var(--muted); }
 @media (max-width: 640px) { .cal-table td { height: 64px; } .cal-ev, .cal-todo { font-size: .62rem; } }
 .todo-check { width: 26px; height: 26px; border-radius: 6px; border: 2px solid var(--brand); background: var(--surface); color: var(--brand); font-weight: 700; cursor: pointer; line-height: 1; flex: none; }
+.note-q { background: var(--surface-2, #f2f5f1); border-radius: 6px; padding: 6px 8px; margin-top: 4px; }
+.pamph { background: #fff; color: #1d2a21; max-width: 720px; margin: 12px auto; padding: 28px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.12); display: grid; gap: 12px; }
+.pamph header { display: flex; justify-content: space-between; border-bottom: 3px solid #2f6b47; padding-bottom: 6px; font-weight: 700; }
+.pamph .pm-co { color: #2f6b47; }
+.pamph .pm-catch { margin: 0; font-size: 1.6rem; line-height: 1.35; color: #2f6b47; font-weight: 700; }
+.pamph h2 { margin: 0; font-size: 1.15rem; }
+.pamph .pm-main { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.pamph .pm-img { aspect-ratio: 4 / 3; border-radius: 8px; background: #f2f5f1; border: 1px dashed #c6cfc8; display: grid; place-items: center; color: #9aa69e; }
+.pamph .pm-main p { margin: 0 0 8px; line-height: 1.8; }
+.pamph .pm-feat { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.pamph .pm-feat li { background: #eef5f0; border-left: 4px solid #2f6b47; padding: 5px 8px; font-weight: 700; }
+.pamph .pm-specs { display: grid; grid-template-columns: 7em 1fr; margin: 0; border-top: 1px solid #c6cfc8; }
+.pamph .pm-specs dt, .pamph .pm-specs dd { margin: 0; padding: 6px; border-bottom: 1px solid #c6cfc8; }
+.pamph .pm-specs dt { background: #f2f5f1; font-weight: 700; }
+.pamph footer { display: flex; justify-content: space-between; font-size: .85rem; color: #5b6b60; border-top: 1px solid #c6cfc8; padding-top: 6px; margin-top: 12px; }
+@media (max-width: 640px) { .pamph { padding: 16px; } .pamph .pm-main { grid-template-columns: 1fr; } .pamph .pm-catch { font-size: 1.25rem; } }
 .biz-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: start; }
 .biz-card dl { display: grid; grid-template-columns: 7em 1fr; gap: 4px 10px; margin: 0; }
 .biz-card dt { color: var(--muted); font-size: .85rem; }
@@ -283,7 +299,7 @@ const OFFICE = { name: "本社工場", lat: 35.1709, lng: 136.8815, radius: 300 
 const ROLES = {
   admin:  { label: "最高権限者", desc: "全部門の画面と、ユーザー・権限の管理" },
   mkt:    { label: "マーケティング", desc: "キャンペーンと見込み客の管理" },
-  sales:  { label: "営業", desc: "商談の進み具合と取引先" },
+  sales:  { label: "営業", desc: "顧客・ニーズ・商談・売上・パンフレット" },
   dev:    { label: "開発", desc: "開発案件と設計FMEA" },
   soumu:  { label: "総務", desc: "設備予約と社内文書" },
   keiri:  { label: "経理", desc: "請求書と経費精算" },
@@ -307,13 +323,13 @@ const USERS = [
 // 役割ごとに、メニューに出す画面の一覧
 const DEPT_VIEWS = {
   mkt:   [["similar", "類似品検索"], ["campaigns", "キャンペーン"], ["leads", "見込み客（リード）"]],
-  sales: [["sales-entry", "売上入力"], ["sales-compare", "売上の比較"], ["deals", "商談"], ["accounts", "取引先"]],
-  dev:   [["projects", "開発案件"], ["dfmea", "設計FMEA"], ["patent", "特許調査"], ["products", "製品台帳"]],
+  sales: [["customers", "顧客"], ["needs", "ニーズと手配"], ["deals", "商談"], ["sales-entry", "売上入力"], ["sales-compare", "売上の比較"], ["prospects", "新規顧客の候補"], ["pamphlets", "パンフレット"]],
+  dev:   [["projects", "開発案件"], ["dev-inq", "開発への納期確認"], ["dfmea", "設計FMEA"], ["patent", "特許調査"], ["products", "製品台帳"]],
   soumu: [["facilities", "設備・会議室予約"], ["documents", "社内文書"]],
   keiri: [["invoices", "請求書"], ["expenses", "経費精算"]],
   jinji: [["employees", "社員名簿"], ["approvals", "勤怠・休暇の承認"]],
   qa:    [["fmea", "工程FMEA"], ["ai-dr", "AI：デザインレビュー資料"], ["ai-sop", "AI：検査作業手順書"], ["defects", "不具合報告"]],
-  kobai: [["products", "製品台帳"], ["partners", "取引先台帳"]],
+  kobai: [["products", "製品台帳"], ["partners", "取引先台帳"], ["needs", "ニーズと手配"], ["prospects", "新規顧客の候補（承認）"]],
 };
 
 // 類似品検索の見本結果（イメージ図。実際の検索はしていません）
@@ -396,12 +412,53 @@ const PARTNERS = [
   { id: "s2", name: "東海めっき工業株式会社", kind: "仕入先", ind: "表面処理" },
 ];
 const PRODUCTS = [
-  { id: "p1", code: "BR-200", name: "シート取付ブラケット", price: 1200, unit: "個", status: "量産", supplier: "s1", dev: "BR-200 取付ブラケット" },
-  { id: "p2", code: "ST-310", name: "ステップ部品", price: 3800, unit: "個", status: "量産", supplier: "s1", dev: "" },
-  { id: "p3", code: "CB-120", name: "制御盤ブラケット", price: 950, unit: "個", status: "量産", supplier: "s2", dev: "" },
-  { id: "p4", code: "AC-050", name: "アーム用板金カバー", price: 6500, unit: "個", status: "試作", supplier: "s1", dev: "板金カバー試作" },
-  { id: "p5", code: "MT-900", name: "金型の改修", price: 180000, unit: "式", status: "量産", supplier: "", dev: "" },
+  { id: "p1", code: "BR-200", lead: 21, name: "シート取付ブラケット", price: 1200, unit: "個", status: "量産", supplier: "s1", dev: "BR-200 取付ブラケット" },
+  { id: "p2", code: "ST-310", lead: 35, name: "ステップ部品", price: 3800, unit: "個", status: "量産", supplier: "s1", dev: "" },
+  { id: "p3", code: "CB-120", lead: 14, name: "制御盤ブラケット", price: 950, unit: "個", status: "量産", supplier: "s2", dev: "" },
+  { id: "p4", code: "AC-050", lead: 45, name: "アーム用板金カバー", price: 6500, unit: "個", status: "試作", supplier: "s1", dev: "板金カバー試作" },
+  { id: "p5", code: "MT-900", lead: 60, name: "金型の改修", price: 180000, unit: "式", status: "量産", supplier: "", dev: "" },
 ];
+// ---- 営業の顧客管理（行動範囲・顧客情報・ニーズ・開発への確認・候補・パンフレット） ----
+const TERRITORIES = [
+  { rep: "u3", areas: ["神戸市", "芦屋市", "西宮市"], note: "火・木は外回り。社用車あり" },
+  { rep: "r2", areas: ["大阪市", "堺市"], note: "電車移動。月・水・金" },
+  { rep: "r3", areas: ["姫路市", "加古川市", "明石市"], note: "社用車あり。泊まりも可" },
+];
+const CUST = {
+  c1: { rep: "u3", area: "神戸市灘区", contact: "購買課 山田 太郎 様", pattern: "定期", cycle: "毎月20日ごろ 発注", lastVisit: -6 },
+  c2: { rep: "r3", area: "姫路市", contact: "資材部 佐藤 様", pattern: "定期", cycle: "3か月ごと（年間契約）", lastVisit: -20 },
+  c3: { rep: "u3", area: "西宮市", contact: "生産技術課 北村 様", pattern: "不定期", cycle: "新機種の立ち上げ時に多い", lastVisit: -35 },
+  c4: { rep: "r2", area: "大阪市北区", contact: "開発部 小林 様", pattern: "不定期", cycle: "試作が中心。量産は来年度から", lastVisit: -12 },
+};
+const CNEEDS = [
+  { id: "n1", c: "c1", kind: "existing", product: "p1", qty: 3000, unit: "個", by: 26, status: "検討中", note: "来月から月3,000個に増産" },
+  { id: "n2", c: "c1", kind: "new_dev", item: "軽量アルミのシートブラケット（今の品より2割軽く）", qty: 1000, unit: "個", by: 120, status: "検討中", note: "来年度の新型車向け" },
+  { id: "n3", c: "c2", kind: "existing", product: "p2", qty: 400, unit: "個", by: 30, status: "検討中", note: "年間契約の次回分" },
+  { id: "n4", c: "c3", kind: "existing", product: "p3", qty: 800, unit: "個", by: 12, status: "検討中", note: "急ぎ。ラインの立ち上げ前倒し" },
+  { id: "n5", c: "c4", kind: "existing", product: "p4", qty: 20, unit: "個", by: 60, status: "検討中", note: "試作品の評価用" },
+  { id: "n6", c: "c4", kind: "new_dev", item: "ロボットアーム用 樹脂カバー（軽量・難燃）", qty: 200, unit: "個", by: 90, status: "検討中", note: "" },
+  { id: "n7", c: "c2", kind: "existing", product: "p2", qty: 300, unit: "個", by: -10, status: "受注", note: "前回分" },
+];
+const INQUIRIES = [
+  { id: "q1", need: "n2", q: "1,000個を来年3月末までに量産できますか", asker: "鈴木 健太", asked: -5, possible: 105, answer: "試作1か月・量産準備2か月。アルミ材の手配しだいで前後します", answerer: "高橋 翔" },
+  { id: "q2", need: "n6", q: "難燃の樹脂で試作できますか。いつまでに出せますか", asker: "木村 彩", asked: -1, possible: null, answer: "", answerer: "" },
+];
+const CNOTES = {
+  c1: [["鈴木 健太", -6, "訪問。来月から増産の予定。BR-200 を月3,000個に。見積は月末までに出す。"], ["小林 茂", -3, "（購買）中部鋼材から材料の値上げ連絡あり。次の見積に反映が必要。"]],
+  c2: [["松本 翔太", -20, "年間契約の更新時期。来年度も継続の見込み。"]],
+  c3: [["鈴木 健太", -35, "新しいラインの立ち上げが前倒し。CB-120 を急ぎで欲しいとのこと。"]],
+  c4: [["木村 彩", -12, "展示会で名刺交換したあと訪問。ロボットのカバーを外注先から切り替えたい。"]],
+};
+const PROSPECTS = [
+  { id: "pr1", name: "灘精機株式会社", area: "神戸市灘区", ind: "精密機械", reason: "展示会で話した。ブラケットを外注していて、納期に困っている。", by: "鈴木 健太", d: -2, status: "確認待ち" },
+  { id: "pr2", name: "播磨重工株式会社", area: "加古川市", ind: "産業機械", reason: "東和オート様からの紹介。板金カバーを探している。", by: "松本 翔太", d: -9, status: "台帳に登録済み" },
+  { id: "pr3", name: "梅田ディスプレイ株式会社", area: "大阪市北区", ind: "什器", reason: "単発の小ロット。うちの得意分野ではない。", by: "木村 彩", d: -15, status: "見送り" },
+];
+const PAMPHLETS = {
+  p1: { catch: "軽くて、さびにくい。シートを支える定番ブラケット", body: "自動車シートのフレームを車体に固定するブラケットです。プレスから塗装まで社内一貫で対応します。", features: ["従来品より20%軽量", "塩水噴霧試験 500時間クリア", "小ロット（100個）から対応"], specs: "材質：SPHC t2.3\n表面処理：電着塗装\n重さ：120g", price: true },
+  p2: { catch: "建設機械の足元を、長く支える", body: "油圧ショベルの乗り降りに使うステップ部品です。すべり止めの形状を独自に工夫しています。", features: ["すべり止めの凹凸を一体成形", "溶接箇所を減らして割れにくく", "年間契約で安定供給"], specs: "材質：SS400 t4.5\n表面処理：溶融亜鉛めっき", price: false },
+};
+
 const SALES_REPS = [{ id: "u3", name: "鈴木 健太" }, { id: "r2", name: "木村 彩" }, { id: "r3", name: "松本 翔太" }];
 const FISCAL_START_MONTH = 4; // 年度の始まり（4月）。四半期もここから数えます
 
@@ -524,6 +581,7 @@ const state = {
   ruleQuery: "",
   dr: null, sop: null,
   manual: false, gpsMsg: "", patentShown: false,
+  cust: "c1", custShow: "mine", pamph: "p1", needsAdded: [],
   salesUnit: "month", salesWho: "all", salesAdded: load("seed.salesAdded", []), sf: null,
   simTab: "keyword", simShown: null, simPhoto: "", simQuery: "シート ブラケット 板金 亜鉛めっき",
   simNote: "自動車のシート下に付ける板金ブラケット。厚さ2.3mm、亜鉛めっき。取付穴4つ。",
@@ -640,6 +698,17 @@ function deltaText(now, before) {
   if (!before) return `<span class="muted">比べる売上なし</span>`;
   const r = Math.round((now / before - 1) * 1000) / 10;
   return `<span class="delta ${r >= 0 ? "up" : "down"}">${r >= 0 ? "+" : ""}${r}%</span>`;
+}
+const md = ymdStr => ymdStr.slice(5).replace("-", "/");
+const allNeeds = () => CNEEDS.concat(state.needsAdded);
+// 期限とリードタイムを見比べる（今日手配したら間に合うか）
+function leadPill(n) {
+  if (n.kind !== "existing") { const q = INQUIRIES.filter(x => x.need === n.id && x.possible !== null).pop();
+    return q ? pill("開発：" + md(dayOf(q.possible)), q.possible > n.by ? "bad" : "ok") : pill("開発に確認中", "info"); }
+  const pr = PRODUCTS.find(x => x.id === n.product); const spare = n.by - pr.lead;
+  if (spare < 0) return pill(`${-spare}日足りません`, "bad");
+  if (spare <= 3) return pill(spare === 0 ? "今日中に手配が必要" : `あと${spare}日で手配が必要`, "warn");
+  return pill(`間に合う（${md(dayOf(spare))}までに手配）`, "ok");
 }
 const nameOf = (list, id) => (list.find(x => x.id === id) || {}).name || "—";
 
@@ -1016,6 +1085,122 @@ const VIEWS = {
           ${ds.map(d => `<div class="deal"><strong>${esc(d.co)}</strong><span class="muted">${esc(d.item)}</span><span class="amt">${yen(d.amt)}</span>
             ${i < 4 ? `<button data-act="advance" data-id="${d.id}">次の段階へ →</button>` : pill("受注", "ok")}</div>`).join("")}</div>`;
       }).join("")}</div>`;
+  },
+  customers() {
+    const me = state.user.role === "sales" ? state.user.id : "u3";
+    const myT = TERRITORIES.find(t => t.rep === me) || { areas: [], note: "" };
+    const inArea = a => myT.areas.some(x => a.includes(x));
+    const show = state.custShow;
+    const list = PARTNERS.filter(p => p.kind !== "仕入先").filter(p => {
+      const c = CUST[p.id]; if (!c) return show === "all";
+      return show === "mine" ? c.rep === me : show === "area" ? inArea(c.area) : true;
+    });
+    const openNeeds = id => allNeeds().filter(n => n.c === id && n.status === "検討中");
+    return head("顧客", "営業", `<span class="small muted">${esc(nameOf(SALES_REPS, me))}さんの画面</span>`) + `
+      <section class="panel"><h2>自分の行動範囲</h2>
+        <div class="row"><div class="field" style="flex:2 1 240px"><label for="t-a">地域</label><input id="t-a" value="${esc(myT.areas.join("、"))}"></div>
+        <div class="field" style="flex:2 1 240px"><label for="t-n">動ける曜日・移動手段など</label><input id="t-n" value="${esc(myT.note)}"></div>
+        <button class="btn" data-act="toast" data-msg="行動範囲を保存しました（見本なので保存はされません）">保存する</button></div>
+        <details style="margin-top:8px"><summary class="small"><strong>営業みんなの行動範囲</strong></summary>${table([{ h: "営業" }, { h: "地域" }, { h: "メモ" }],
+          TERRITORIES.map(t => [esc(nameOf(SALES_REPS, t.rep)), esc(t.areas.join("、")), `<span class="small">${esc(t.note)}</span>`]))}</details></section>
+      <div class="row" role="tablist">${[["mine", "自分の担当"], ["area", "行動範囲の中"], ["all", "すべての得意先"]].map(([k, l]) =>
+        `<button class="btn ${k === show ? "" : "secondary"}" role="tab" aria-selected="${k === show}" data-act="cust-show" data-k="${k}">${l}</button>`).join("")}</div>
+      <section class="panel">${list.length ? table([{ h: "顧客" }, { h: "地域" }, { h: "担当" }, { h: "注文の形" }, { h: "検討中のニーズ", r: 1 }, { h: "いちばん近い期限" }, { h: "最後の訪問" }],
+        list.map(p => { const c = CUST[p.id] || {}; const ns = openNeeds(p.id); const near = ns.map(n => n.by).sort((a, b) => a - b)[0];
+          return [`<button class="btn-link" data-act="cust-open" data-id="${p.id}"><strong>${esc(p.name)}</strong></button><br><span class="small muted">${esc(p.ind)}</span>`,
+            `${esc(c.area || "")}${c.area && inArea(c.area) ? " " + pill("範囲内", "ok") : ""}`, esc(nameOf(SALES_REPS, c.rep)),
+            `${c.pattern ? pill(c.pattern, c.pattern === "定期" ? "ok" : "info") : "—"}<br><span class="small muted">${esc(c.cycle || "")}</span>`,
+            String(ns.length || ""), near !== undefined ? `<span class="num"${near < 14 ? ' style="color:var(--bad);font-weight:700"' : ""}>${md(dayOf(near))}</span>` : "",
+            c.lastVisit !== undefined ? `<span class="num small">${md(dayOf(c.lastVisit))}</span>` : ""]; })) : '<p class="muted">この条件の顧客はありません。</p>'}</section>`;
+  },
+  customer() {
+    const p = PARTNERS.find(x => x.id === state.cust) || PARTNERS[0], c = CUST[p.id] || {};
+    const ns = allNeeds().filter(n => n.c === p.id);
+    const cards = state.cards.filter(k => k.company === p.name);
+    return head(p.name, "顧客") + `<p class="small"><button class="btn-link" data-act="nav" data-view="customers" data-dept="${state.viewDept || ""}">← 顧客の一覧</button></p>
+      <section class="panel"><h2>顧客情報</h2><p class="small muted">業種：${esc(p.ind)}</p>
+        <div class="row"><div class="field"><label for="cu-r">担当</label><select id="cu-r">${SALES_REPS.map(r => `<option ${r.id === c.rep ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select></div>
+          <div class="field"><label for="cu-a">地域</label><input id="cu-a" value="${esc(c.area || "")}"></div>
+          <div class="field" style="flex:1 1 200px"><label for="cu-c">窓口の人</label><input id="cu-c" value="${esc(c.contact || "")}"></div></div>
+        <div class="row"><div class="field"><label for="cu-p">注文の形</label><select id="cu-p">${["定期", "不定期", "まだわからない"].map(x => `<option ${x === c.pattern ? "selected" : ""}>${x}</option>`).join("")}</select></div>
+          <div class="field" style="flex:1 1 240px"><label for="cu-y">定期なら周期・不定期なら傾向</label><input id="cu-y" value="${esc(c.cycle || "")}"></div>
+          <button class="btn" data-act="toast" data-msg="顧客情報を保存しました（見本なので保存はされません）">保存する</button></div>
+        ${cards.length ? `<p class="small">名刺：${cards.map(k => `<button class="btn-link" data-act="card-open" data-id="${k.id}">${esc(k.name)}</button>（${esc(k.pos)}）`).join("、")}</p>` : ""}</section>
+      <section class="panel"><h2>ニーズ（いつまでに・何が・いくつ）</h2>
+        <p class="small muted">いまある製品は、購買が製品台帳に入れたリードタイムと期限を見比べて「間に合うか」を出します。新規開発は、開発に「いつまでにできるか」を確認できます。</p>
+        ${ns.length ? table([{ h: "種類" }, { h: "品目" }, { h: "数量", r: 1 }, { h: "いつまでに" }, { h: "間に合うか" }, { h: "状態" }], ns.map(n => {
+          const qs = INQUIRIES.filter(q => q.need === n.id);
+          const item = n.kind === "existing" ? (() => { const pr = PRODUCTS.find(x => x.id === n.product); return `${esc(pr.code)} ${esc(pr.name)}`; })() : esc(n.item);
+          const inq = n.kind === "new_dev" ? `<div class="small" style="margin-top:4px">${qs.map(q => `<div class="note-q"><strong>質問</strong>（${esc(q.asker)}）：${esc(q.q)}<br>${q.possible !== null ? `<strong>開発の回答</strong>（${esc(q.answerer)}）：${md(dayOf(q.possible))}までにできる見込み。${esc(q.answer)}` : '<span class="muted">開発の回答待ち</span>'}</div>`).join("")}
+            <div class="row" style="margin-top:4px"><input id="ask-${n.id}" placeholder="例：1,000個を3月末までにできますか" style="flex:1 1 200px"><button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="ask-dev" data-id="${n.id}">開発に確認する</button></div></div>` : "";
+          return [n.kind === "existing" ? "いまある製品" : "新規開発", `${item}${n.note ? `<br><span class="small muted">${esc(n.note)}</span>` : ""}${inq}`, `${n.qty.toLocaleString("ja-JP")} ${esc(n.unit)}`,
+            `<span class="num">${md(dayOf(n.by))}</span>`, n.status !== "検討中" ? '<span class="muted">—</span>' : leadPill(n), statusPill(n.status === "受注" ? "受注" : n.status)];
+        })) : '<p class="muted">まだニーズがありません。</p>'}
+        <div style="border-top:1px solid var(--line);margin-top:12px;padding-top:12px"><h3 style="margin:0 0 8px">ニーズを書く</h3>
+          <div class="row"><div class="field"><label for="nd-k">種類</label><select id="nd-k"><option value="existing">いまある製品</option><option value="new_dev">新規開発</option></select></div>
+            <div class="field" style="flex:1 1 200px;min-width:0"><label for="nd-p">製品（いまある製品のとき）</label><select id="nd-p" style="width:100%;max-width:100%">${PRODUCTS.map(x => `<option value="${x.id}">${esc(x.code)} ${esc(x.name)}（リードタイム${x.lead}日）</option>`).join("")}</select></div>
+            <div class="field" style="flex:1 1 200px"><label for="nd-i">新規開発なら、ほしいものの説明</label><input id="nd-i" placeholder="例：今の品より2割軽く"></div></div>
+          <div class="row"><div class="field"><label for="nd-q">数量</label><input id="nd-q" type="number" min="1" value="500" style="width:110px"></div>
+            <div class="field"><label for="nd-d">いつまでに</label><input id="nd-d" type="date" value="${dayOf(30)}"></div>
+            <button class="btn" data-act="need-add" data-id="${p.id}">ニーズを書く</button></div></div></section>
+      <section class="panel"><h2>メモ（${(CNOTES[p.id] || []).length}件）</h2><p class="small muted">営業・購買が書けます。訪問した日・話したこと・次にすること など。</p>
+        <div class="field"><label for="cn" class="sr-only">メモ</label><textarea id="cn" rows="3" placeholder="例：訪問。来年度から増産の予定。見積は月末までに。"></textarea></div>
+        <div class="row"><button class="btn" data-act="cnote-add" data-id="${p.id}">メモを残す</button></div>
+        <div class="list" style="margin-top:10px">${(CNOTES[p.id] || []).slice().reverse().map(([who, d, body]) => `<div class="list-item" style="display:block"><span class="small muted">${esc(who)}　${md(dayOf(d))}</span><p style="white-space:pre-wrap">${esc(body)}</p></div>`).join("")}</div></section>`;
+  },
+  needs() {
+    const ns = allNeeds().filter(n => n.status === "検討中").sort((a, b) => a.by - b.by);
+    const tot = {};
+    ns.filter(n => n.kind === "existing").forEach(n => { const t = tot[n.product] || (tot[n.product] = { qty: 0, by: 9999 }); t.qty += n.qty; t.by = Math.min(t.by, n.by); });
+    return head("ニーズと手配", "営業・購買") + `<p class="small muted">営業が顧客ページに書いた「検討中」のニーズを、期限の近い順に並べています。品目ごとのリードタイム（製品台帳で購買が入力）から、いつまでに手配すれば間に合うかを出します。</p>
+      <section class="panel"><h2>品目ごとの合計</h2>${table([{ h: "品目" }, { h: "仕入先" }, { h: "必要な数の合計", r: 1 }, { h: "リードタイム", r: 1 }, { h: "いちばん早い期限" }, { h: "手配" }],
+        Object.entries(tot).sort((a, b) => a[1].by - b[1].by).map(([pid, t]) => { const pr = PRODUCTS.find(x => x.id === pid);
+          return [`${esc(pr.code)} ${esc(pr.name)}`, pr.supplier ? esc(nameOf(PARTNERS, pr.supplier)) : "社内", `${t.qty.toLocaleString("ja-JP")} ${esc(pr.unit)}`, `${pr.lead}日`, `<span class="num">${md(dayOf(t.by))}</span>`, leadPill({ kind: "existing", product: pid, by: t.by })]; }))}</section>
+      <section class="panel"><h2>ニーズの一覧</h2>${table([{ h: "いつまでに" }, { h: "顧客" }, { h: "種類" }, { h: "品目" }, { h: "数量", r: 1 }, { h: "間に合うか" }],
+        ns.map(n => { const pr = PRODUCTS.find(x => x.id === n.product);
+          return [`<span class="num">${md(dayOf(n.by))}</span>`, `<button class="btn-link" data-act="cust-open" data-id="${n.c}">${esc(nameOf(PARTNERS, n.c))}</button>`, n.kind === "existing" ? "いまある製品" : "新規開発",
+            n.kind === "existing" ? `${esc(pr.code)} ${esc(pr.name)}` : esc(n.item), `${n.qty.toLocaleString("ja-JP")} ${esc(n.unit)}`, leadPill(n)]; }))}</section>`;
+  },
+  prospects() {
+    const reviewer = ["admin", "kobai"].includes(state.user.role);
+    const cls = { "確認待ち": "warn", "台帳に登録済み": "ok", "見送り": "info" };
+    return head("新規顧客の候補", "営業・購買") + `<p class="small muted">営業が「この会社に売れそう」という候補を出し、購買（または最高権限者）が確かめて取引先台帳に登録します。会社ごとに、使う・使わないを選べるオプションです。</p>
+      <section class="panel"><h2>候補を出す</h2><div class="row">
+        <div class="field" style="flex:1 1 200px"><label for="pp-n">会社名</label><input id="pp-n" placeholder="例：六甲工業株式会社"></div>
+        <div class="field"><label for="pp-a">地域</label><input id="pp-a" placeholder="神戸市東灘区"></div>
+        <div class="field"><label for="pp-i">業種</label><input id="pp-i"></div></div>
+        <div class="field"><label for="pp-r">提案の理由（何が売れそうか・どこで知ったか）</label><textarea id="pp-r" rows="2"></textarea></div>
+        <div class="row" style="margin-top:8px"><button class="btn" data-act="prospect-add">候補を出す</button></div></section>
+      <section class="panel">${table([{ h: "会社名" }, { h: "地域" }, { h: "理由" }, { h: "出した人" }, { h: "状態" }, { h: "" }],
+        PROSPECTS.map(x => [`<strong>${esc(x.name)}</strong><br><span class="small muted">${esc(x.ind)}</span>`, esc(x.area), `<span class="small">${esc(x.reason)}</span>`,
+          `<span class="small">${esc(x.by)}<br><span class="muted">${md(dayOf(x.d))}</span></span>`, pill(x.status, cls[x.status]),
+          x.status === "確認待ち" && reviewer ? `<div class="row" style="gap:4px"><button class="btn" style="padding:2px 10px;font-size:.8rem" data-act="prospect-ok" data-id="${x.id}">台帳に登録</button><button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="prospect-ng" data-id="${x.id}">見送り</button></div>` : ""]))}</section>`;
+  },
+  pamphlets() {
+    return head("パンフレット", "営業・購買・開発") + `<p class="small muted">製品ごとに、うたい文句・特長・写真を書いておくと、A4のパンフレットとして印刷・PDF保存できます。品番・製品名・リードタイム（納期の目安）・標準単価は製品台帳から自動で入ります。</p>
+      <section class="panel">${table([{ h: "品番" }, { h: "製品名" }, { h: "うたい文句" }, { h: "リードタイム", r: 1 }, { h: "" }],
+        PRODUCTS.map(p => [`<span class="num">${esc(p.code)}</span>`, esc(p.name), PAMPHLETS[p.id] ? `<span class="small">${esc(PAMPHLETS[p.id].catch)}</span>` : '<span class="muted small">まだ</span>', `${p.lead}日`,
+          PAMPHLETS[p.id] ? `<button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="pamph-open" data-id="${p.id}">パンフレットを見る</button>` : `<button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="toast" data-msg="本物では、うたい文句・特長・写真を入れる画面が開きます">作る</button>`]))}</section>`;
+  },
+  pamphlet() {
+    const p = PRODUCTS.find(x => x.id === state.pamph) || PRODUCTS[0], m = PAMPHLETS[p.id];
+    return head(`${p.code} ${p.name} のパンフレット`, "パンフレット") + `<p class="small"><button class="btn-link" data-act="nav" data-view="pamphlets" data-dept="${state.viewDept || ""}">← パンフレットの一覧</button></p>
+      <div class="row"><button class="btn" data-act="toast" data-msg="本物では、A4 1枚の形で印刷・PDF保存できます">印刷する・PDFで保存する</button></div>
+      <article class="pamph"><header><span class="pm-co">株式会社サンプル製作所</span><span class="num">${esc(p.code)}</span></header>
+        <p class="pm-catch">${esc(m.catch)}</p><h2>${esc(p.name)}</h2>
+        <div class="pm-main"><div class="pm-img" aria-hidden="true">製品の写真</div><div><p>${esc(m.body)}</p><ul class="pm-feat">${m.features.map(f => `<li>${esc(f)}</li>`).join("")}</ul></div></div>
+        <dl class="pm-specs"><dt>仕様</dt><dd style="white-space:pre-wrap">${esc(m.specs.replace(/\\n/g, "\n"))}</dd><dt>品番</dt><dd>${esc(p.code)}</dd><dt>納期の目安</dt><dd>ご注文から約 ${p.lead} 日</dd>${m.price ? `<dt>標準価格</dt><dd>${yen(p.price)}／${esc(p.unit)}（税別）</dd>` : ""}</dl>
+        <footer><span>株式会社サンプル製作所</span><span>お問い合わせは担当営業まで</span></footer></article>`;
+  },
+  "dev-inq"() {
+    return head("開発への納期確認", "開発") + `<p class="small muted">営業が顧客から受けた新規開発の相談です。「いつまでにできるか」を答えると、営業の顧客ページに出ます。</p>` +
+      INQUIRIES.slice().sort((a, b) => (a.possible === null ? 0 : 1) - (b.possible === null ? 0 : 1)).map(q => { const n = CNEEDS.find(x => x.id === q.need);
+        return `<section class="panel"><div class="panel-head"><h2>${esc(nameOf(PARTNERS, n.c))}：${esc(n.item)}</h2><span class="spacer"></span>${pill(q.possible === null ? "回答待ち" : "回答済み", q.possible === null ? "warn" : "ok")}</div>
+          <p class="small">数量：${n.qty.toLocaleString("ja-JP")} ${esc(n.unit)}　顧客の希望：${md(dayOf(n.by))}まで</p>
+          <p><strong>質問</strong>（${esc(q.asker)}）：${esc(q.q)}</p>
+          <div class="row"><div class="field"><label for="ia-d-${q.id}">できる日</label><input id="ia-d-${q.id}" type="date" value="${q.possible !== null ? dayOf(q.possible) : dayOf(80)}"></div>
+            <div class="field" style="flex:1 1 260px"><label for="ia-a-${q.id}">回答</label><input id="ia-a-${q.id}" value="${esc(q.answer)}" placeholder="試作1か月・量産準備1.5か月"></div>
+            <button class="btn" data-act="dev-answer" data-id="${q.id}">${q.possible === null ? "回答する" : "回答を直す"}</button></div></section>`; }).join("");
   },
   accounts() {
     return head("取引先", "営業") + `<section class="panel">${table(
@@ -1399,6 +1584,38 @@ document.addEventListener("click", e => {
     const w = document.getElementById("td-w").value.replace(/さんに頼む$/, "");
     state.todos.push({ id: "t" + Date.now(), title: t, due: document.getElementById("td-d").value, done: false, who: w });
     toast("足しました（見本なので保存はされません）");
+  }
+  else if (act === "cust-open") { state.cust = el.dataset.id; state.view = "customer"; window.scrollTo(0, 0); }
+  else if (act === "cust-show") { state.custShow = el.dataset.k; }
+  else if (act === "pamph-open") { state.pamph = el.dataset.id; state.view = "pamphlet"; window.scrollTo(0, 0); }
+  else if (act === "cnote-add") {
+    const t = document.getElementById("cn").value.trim(); if (!t) { toast("メモを書いてください"); return; }
+    (CNOTES[el.dataset.id] = CNOTES[el.dataset.id] || []).push([state.user.name, 0, t]); toast("メモを残しました");
+  } else if (act === "need-add") {
+    const v = id => document.getElementById(id).value, kind = v("nd-k");
+    if (kind === "new_dev" && !v("nd-i").trim()) { toast("新規開発は、ほしいものの説明を書いてください"); return; }
+    const by = Math.round((new Date(v("nd-d") + "T12:00") - new Date(dayOf(0) + "T12:00")) / 86400000);
+    state.needsAdded.push({ id: "na" + Date.now(), c: el.dataset.id, kind, product: kind === "existing" ? v("nd-p") : null, item: v("nd-i").trim(), qty: +v("nd-q") || 1, unit: "個", by, status: "検討中", note: "" });
+    toast(kind === "existing" ? "ニーズを書きました。リードタイムと見比べた結果が出ます" : "ニーズを書きました。「開発に確認する」で納期を聞けます");
+  } else if (act === "ask-dev") {
+    const t = document.getElementById("ask-" + el.dataset.id).value.trim(); if (!t) { toast("開発に聞くことを書いてください"); return; }
+    INQUIRIES.push({ id: "q" + Date.now(), need: el.dataset.id, q: t, asker: state.user.name, asked: 0, possible: null, answer: "", answerer: "" });
+    toast("開発の「納期確認」に届けました");
+  } else if (act === "dev-answer") {
+    const q = INQUIRIES.find(x => x.id === el.dataset.id);
+    const d = document.getElementById("ia-d-" + q.id).value;
+    q.possible = Math.round((new Date(d + "T12:00") - new Date(dayOf(0) + "T12:00")) / 86400000);
+    q.answer = document.getElementById("ia-a-" + q.id).value.trim(); q.answerer = state.user.name;
+    toast("回答しました。営業の顧客ページに出ます");
+  } else if (act === "prospect-add") {
+    const v = id => document.getElementById(id).value.trim();
+    if (!v("pp-n")) { toast("会社名を入れてください"); return; }
+    PROSPECTS.unshift({ id: "pr" + Date.now(), name: v("pp-n"), area: v("pp-a"), ind: v("pp-i"), reason: v("pp-r"), by: state.user.name, d: 0, status: "確認待ち" });
+    toast("候補を出しました。購買の確認を待ちます");
+  } else if (act === "prospect-ok" || act === "prospect-ng") {
+    const x = PROSPECTS.find(y => y.id === el.dataset.id);
+    x.status = act === "prospect-ok" ? "台帳に登録済み" : "見送り";
+    toast(act === "prospect-ok" ? `${x.name} を取引先台帳に登録しました` : "見送りにしました");
   }
   else if (act === "card-open") { state.card = el.dataset.id; state.view = "card"; state.tab = 0; window.scrollTo(0, 0); }
   else if (act === "memo-add") {
