@@ -1,0 +1,1526 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- the seed の画面見本（最高権限者の画面）。画面が切り替わるだけで、入れた内容は保存されません -->
+<title>the seed 画面の見本（最高権限者）｜the weed</title>
+<meta name="description" content="中小企業向けMother AI「the seed」の画面を触って見られる見本です。最高権限者の画面で、画面が切り替わるだけ、入れた内容は保存されません。役割によってタブは限定されます。">
+<link rel="canonical" href="https://chikaminami003.github.io/chikara-yanai-theweed/seed-demo.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+/* the weed のサイトへ戻るための細い帯（見本の画面の上に出ます） */
+.site-back { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; justify-content: space-between; padding: 8px 16px; background: #1d2a22; color: #fff; font-size: .85rem; font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif; }
+.site-back a { color: #fff; }
+</style>
+</head>
+<body>
+<div class="site-back">
+  <a href="seed.html">← the seed の紹介ページに戻る</a>
+</div>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* レイアウト: 上に会社バー、左に役割ごとのメニュー、右に作業画面（スマホでは縦に積む） */
+:root {
+  --bg: #f3f5f1;
+  --surface: #ffffff;
+  --surface-2: #e9eee6;
+  --fg: #1d2a22;
+  --muted: #5b6b60;
+  --line: #d4ddd2;
+  --brand: #2f6b47;      /* 若葉の深緑 */
+  --brand-ink: #ffffff;
+  --brand-soft: #dcebdf;
+  --soil: #7a5a3a;       /* 土の茶 */
+  --ok: #2e7d4f;
+  --warn: #b7791f;
+  --bad: #b83a3a;
+  --ok-soft: #dff0e5;
+  --warn-soft: #f8ecd4;
+  --bad-soft: #f6dddd;
+  --font-display: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141a16; --surface: #1c241f; --surface-2: #243029; --fg: #e4ebe5; --muted: #9aab9f;
+    --line: #33423a; --brand: #6fbf8c; --brand-ink: #0f1a13; --brand-soft: #23402f; --soil: #c9a27b;
+    --ok: #74c793; --warn: #e2b25a; --bad: #ec8a8a; --ok-soft: #1f3a2a; --warn-soft: #3d311b; --bad-soft: #432424;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141a16; --surface: #1c241f; --surface-2: #243029; --fg: #e4ebe5; --muted: #9aab9f;
+  --line: #33423a; --brand: #6fbf8c; --brand-ink: #0f1a13; --brand-soft: #23402f; --soil: #c9a27b;
+  --ok: #74c793; --warn: #e2b25a; --bad: #ec8a8a; --ok-soft: #1f3a2a; --warn-soft: #3d311b; --bad-soft: #432424;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.7; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.35; margin: 0; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.15rem; }
+h3 { font-size: 1rem; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+
+/* ===== ログイン画面 ===== */
+.login { min-height: 100%; padding-block: 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.login-inner { max-width: 880px; margin: 0 auto; display: grid; gap: 24px; }
+.logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; }
+.logo svg { flex: none; }
+.login-head p { max-width: 60ch; }
+.sample-flag { display: inline-block; background: var(--warn-soft); color: var(--warn); border-radius: 999px; padding: 2px 12px; font-size: .8rem; font-weight: 700; }
+.role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.role-card { text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; cursor: pointer; display: grid; gap: 4px; }
+.role-card:hover { border-color: var(--brand); }
+.role-card .r { font-weight: 700; color: var(--brand); font-size: .85rem; letter-spacing: .04em; }
+.role-card .n { font-family: var(--font-display); font-size: 1.05rem; }
+
+/* ===== アプリ本体 ===== */
+.app { display: grid; grid-template-rows: auto 1fr; min-height: 100%; }
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--brand); color: var(--brand-ink); display: flex; align-items: center; gap: 12px; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); flex-wrap: wrap; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--brand); }
+.topbar .company { font-size: .85rem; opacity: .85; }
+.topbar .spacer { flex: 1; }
+.who { display: flex; align-items: center; gap: 8px; font-size: .9rem; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--brand-ink); color: var(--brand); display: grid; place-items: center; font-weight: 700; font-size: .85rem; flex: none; }
+.btn-ghost-light { background: transparent; border: 1px solid currentColor; color: var(--brand-ink); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: .85rem; }
+.layout { display: grid; grid-template-columns: 230px 1fr; min-height: 0; }
+.side { background: var(--surface); border-right: 1px solid var(--line); padding: 16px 10px; display: grid; align-content: start; gap: 14px; }
+.side-group { display: grid; gap: 2px; }
+.side-label { font-size: .72rem; letter-spacing: .08em; color: var(--muted); padding: 0 10px; font-weight: 700; }
+.nav-btn { text-align: left; background: none; border: 0; border-radius: 6px; padding: 7px 10px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.nav-btn:hover { background: var(--surface-2); }
+.nav-btn[aria-current="page"] { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+.nav-btn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line); flex: none; }
+.nav-btn[aria-current="page"] .dot { background: var(--brand); }
+.badge-count { margin-left: auto; background: var(--bad); color: #fff; border-radius: 999px; font-size: .7rem; padding: 0 7px; font-weight: 700; }
+.main { padding-block: 22px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); min-width: 0; display: grid; gap: 18px; align-content: start; }
+.page-head { display: flex; flex-wrap: wrap; align-items: end; gap: 8px 16px; }
+.page-head .crumb { font-size: .8rem; color: var(--muted); width: 100%; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.tile .label { font-size: .8rem; color: var(--muted); }
+.tile .value { font-family: var(--font-mono); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.tile .sub { font-size: .8rem; }
+.up { color: var(--ok); } .down { color: var(--bad); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.panel-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.panel-head .spacer { flex: 1; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; align-items: start; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .78rem; color: var(--muted); font-weight: 700; letter-spacing: .03em; white-space: nowrap; background: var(--surface-2); }
+td.r, th.r { text-align: right; }
+.pill { display: inline-block; border-radius: 999px; padding: 1px 10px; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.info { background: var(--surface-2); color: var(--muted); }
+
+.btn { background: var(--brand); color: var(--brand-ink); border: 0; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: 700; }
+.btn:hover { filter: brightness(1.08); }
+.btn.secondary { background: var(--surface); color: var(--brand); border: 1px solid var(--brand); }
+.btn.big { padding: 14px 22px; font-size: 1.05rem; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.field { display: grid; gap: 4px; }
+.field label { font-size: .8rem; color: var(--muted); font-weight: 700; }
+.field input, .field select, .field textarea { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; }
+.note { background: var(--surface-2); border-radius: 8px; padding: 10px 12px; font-size: .88rem; }
+.note.warn { background: var(--warn-soft); }
+.list { display: grid; gap: 0; }
+.list-item { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); align-items: baseline; flex-wrap: wrap; }
+.list-item:last-child { border-bottom: 0; }
+.list-item .date { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); }
+
+/* 商談のかんばん */
+.kanban { display: grid; grid-template-columns: repeat(5, minmax(170px, 1fr)); gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+.lane { background: var(--surface-2); border-radius: 10px; padding: 10px; display: grid; gap: 8px; align-content: start; }
+.lane h3 { font-size: .85rem; display: flex; justify-content: space-between; }
+.deal { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; display: grid; gap: 2px; font-size: .85rem; }
+.deal .amt { font-family: var(--font-mono); }
+.deal button { justify-self: start; font-size: .75rem; background: none; border: 0; color: var(--brand); cursor: pointer; padding: 0; }
+
+/* 勤怠 */
+.clock { font-family: var(--font-mono); font-size: 2.4rem; font-variant-numeric: tabular-nums; }
+.punch-area { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+
+/* 就業規則 */
+.rules { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: start; }
+.toc { display: grid; gap: 2px; position: sticky; top: 70px; }
+.article { display: grid; gap: 4px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.article h3 { font-size: .95rem; color: var(--brand); }
+mark { background: var(--warn-soft); color: inherit; padding: 0 2px; }
+
+/* AI出力 */
+.ai-out { border: 1px solid var(--brand); border-radius: 10px; padding: 16px; display: grid; gap: 12px; background: var(--surface); }
+.ai-tag { font-size: .75rem; font-weight: 700; color: var(--brand); letter-spacing: .06em; }
+ol.steps { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; }
+.rpn-bar { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; min-width: 60px; }
+.rpn-bar span { display: block; height: 100%; }
+
+/* 類似品検索（イメージ図） */
+.api-note { border: 1px dashed var(--soil); background: var(--surface); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; font-size: .88rem; }
+.api-note strong { color: var(--soil); }
+.api-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+.api-item { background: var(--surface-2); border-radius: 8px; padding: 8px 10px; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+/* 売上の比較グラフ（1系列の棒グラフ。いま進行中の期間は薄い色で「途中」） */
+.bars { display: grid; grid-template-columns: 56px 1fr; gap: 0 8px; }
+.bars-axis { position: relative; height: 200px; font-size: .72rem; color: var(--muted); }
+.bars-axis span { position: absolute; right: 0; transform: translateY(50%); font-family: var(--font-mono); }
+.bars-plot { position: relative; height: 200px; display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--line); min-width: 0; }
+.bars-grid { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--line); pointer-events: none; }
+.bar { position: relative; flex: 1 1 0; height: 100%; display: flex; align-items: flex-end; justify-content: center; cursor: default; min-width: 0; }
+.bar i { display: block; width: min(70%, 34px); background: var(--brand); border-radius: 4px 4px 0 0; min-height: 2px; }
+.bar.now i { opacity: .5; }
+.bar:hover i, .bar:focus-visible i { filter: brightness(1.15); }
+.bar .tip { display: none; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 4px 8px; border-radius: 6px; font-size: .75rem; white-space: nowrap; z-index: 5; pointer-events: none; }
+.bar:hover .tip, .bar:focus-visible .tip { display: block; }
+.bars-x { grid-column: 2; display: flex; gap: 2px; font-size: .7rem; color: var(--muted); }
+.bars-x span { flex: 1 1 0; text-align: center; white-space: nowrap; overflow: hidden; min-width: 0; }
+.delta.up { color: var(--ok); } .delta.down { color: var(--bad); }
+td.num { white-space: nowrap; }
+.meter { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; min-width: 60px; }
+.meter i { display: block; height: 100%; background: var(--brand); border-radius: 0 4px 4px 0; }
+.result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+.result-card { display: grid; gap: 4px; align-content: start; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); min-width: 0; }
+.result-card svg { width: 100%; height: auto; border-radius: 6px; background: var(--surface-2); display: block; }
+.result-card .t { font-weight: 700; font-size: .88rem; overflow-wrap: anywhere; }
+.result-card .pill { justify-self: start; }
+.photo-preview { max-height: 110px; border-radius: 8px; border: 1px solid var(--line); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--fg); color: var(--bg); padding: 10px 18px; border-radius: 8px; z-index: 20; font-size: .9rem; max-width: calc(100% - 32px); }
+
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  .side { border-right: 0; border-bottom: 1px solid var(--line); display: flex; overflow-x: auto; gap: 4px; padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); }
+  .side-group { display: flex; gap: 2px; }
+  .side-label { display: none; }
+  .nav-btn { white-space: nowrap; }
+  .rules { grid-template-columns: 1fr; }
+  .toc { position: static; display: flex; flex-wrap: wrap; gap: 4px; }
+  .clock { font-size: 2rem; }
+}
+
+/* ===== 見本の追加分：タブ・カレンダー・名刺・小窓 ===== */
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+.main { width: 100%; max-width: 1200px; margin: 0 auto; }
+.demo-note { background: var(--warn-soft); padding: 8px 16px; font-size: .85rem; text-align: center; }
+.tabs { background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 4; }
+.tab-row { display: flex; gap: 4px; padding: 8px 16px 0; overflow-x: auto; max-width: 1200px; margin: 0 auto; }
+.tab { border: 1px solid var(--line); border-bottom: 0; background: var(--surface-2); border-radius: 8px 8px 0 0; padding: 7px 16px; font-weight: 700; cursor: pointer; white-space: nowrap; color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.tab-items { display: flex; gap: 4px; padding: 8px 16px; overflow-x: auto; border-top: 3px solid var(--brand); max-width: 1200px; margin: 0 auto; }
+.tab-items .nav-btn { white-space: nowrap; }
+.tab-items .nav-btn .dot { display: none; }
+.btn-link { background: none; border: 0; padding: 0; color: var(--brand); text-decoration: underline; cursor: pointer; font: inherit; }
+.home-clock { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.home-date { font-size: 1.15rem; font-weight: 700; }
+.home-time { font-size: 2rem; }
+.home-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.home-grid > .panel, .panel { align-content: start; }
+@media (max-width: 860px) { .home-grid { grid-template-columns: 1fr; } }
+.cal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.cal-table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.cal-table th { font-size: .78rem; color: var(--muted); padding: 4px; text-align: center; }
+.cal-table td { border: 1px solid var(--line); vertical-align: top; padding: 0; height: 92px; }
+.cal.compact .cal-table td { height: 44px; }
+.cal-table .sun .cal-num, .cal-table th.sun { color: #c0392b; }
+.cal-table .sat .cal-num, .cal-table th.sat { color: #2f5fa7; }
+.cal-table td.other { background: var(--surface-2); }
+.cal-table td.other .cal-num { opacity: .5; }
+.cal-table td.today .cal-num { background: var(--brand); color: var(--brand-ink); border-radius: 50%; }
+.cal-table td.selected { outline: 2px solid var(--brand); outline-offset: -2px; }
+.cal-day { display: flex; flex-direction: column; gap: 2px; padding: 3px; height: 100%; width: 100%; background: none; border: 0; text-align: left; cursor: pointer; overflow: hidden; }
+.cal.compact .cal-day { align-items: center; }
+.cal-num { font-size: .8rem; font-weight: 700; width: 1.7em; height: 1.7em; display: inline-grid; place-items: center; }
+.cal-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+.cal-ev, .cal-todo { font-size: .7rem; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 3px; padding: 0 3px; max-width: 100%; }
+.cal-ev.private { background: var(--brand-soft); }
+.cal-ev.company { background: var(--warn-soft); }
+.cal-todo { color: var(--muted); }
+@media (max-width: 640px) { .cal-table td { height: 64px; } .cal-ev, .cal-todo { font-size: .62rem; } }
+.todo-check { width: 26px; height: 26px; border-radius: 6px; border: 2px solid var(--brand); background: var(--surface); color: var(--brand); font-weight: 700; cursor: pointer; line-height: 1; flex: none; }
+.biz-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: start; }
+.biz-card dl { display: grid; grid-template-columns: 7em 1fr; gap: 4px 10px; margin: 0; }
+.biz-card dt { color: var(--muted); font-size: .85rem; }
+.biz-card dd { margin: 0; word-break: break-all; }
+.card-photo { width: 300px; aspect-ratio: 91 / 55; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: #222; padding: 14px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+@media (max-width: 640px) { .biz-card { grid-template-columns: 1fr; } .card-photo { width: 100%; } }
+.filebox { display: inline-block; border: 1px dashed var(--line); border-radius: 6px; padding: 6px 10px; background: var(--surface-2); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.modal-back { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: grid; place-items: center; z-index: 50; padding: 16px; }
+.modal { background: var(--surface); border-radius: 12px; padding: 20px; max-width: 420px; width: 100%; display: grid; gap: 10px; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+textarea { width: 100%; }
+</style>
+
+<div id="root"></div>
+
+<script>
+/* =========================================================
+   the seed 試作版
+   ・本物のサーバーはありません。データはすべて「見本（架空の会社）」です。
+   ・あなたが打刻した記録などは、このブラウザの中だけに保存されます。
+   ========================================================= */
+
+// ---------- 1. 見本データ ----------
+const COMPANY = "株式会社みらい精機（架空）";
+const OFFICE = { name: "本社工場", lat: 35.1709, lng: 136.8815, radius: 300 }; // 見本の位置
+
+const ROLES = {
+  admin:  { label: "最高権限者", desc: "全部門の画面と、ユーザー・権限の管理" },
+  mkt:    { label: "マーケティング", desc: "キャンペーンと見込み客の管理" },
+  sales:  { label: "営業", desc: "商談の進み具合と取引先" },
+  dev:    { label: "開発", desc: "開発案件と設計FMEA" },
+  soumu:  { label: "総務", desc: "設備予約と社内文書" },
+  keiri:  { label: "経理", desc: "請求書と経費精算" },
+  jinji:  { label: "人事", desc: "社員名簿と勤怠・休暇の承認" },
+  qa:     { label: "品質保証", desc: "FMEA・不具合と、AIでの資料づくり" },
+  kobai:  { label: "購買", desc: "製品・取引先の台帳と仕入先" },
+};
+
+const USERS = [
+  { id: "u1", name: "山田 一郎", role: "admin", title: "代表取締役" },
+  { id: "u2", name: "佐藤 美咲", role: "mkt", title: "マーケティング課" },
+  { id: "u3", name: "鈴木 健太", role: "sales", title: "営業課 主任" },
+  { id: "u4", name: "高橋 翔", role: "dev", title: "設計開発課" },
+  { id: "u5", name: "田中 由美", role: "soumu", title: "総務課" },
+  { id: "u6", name: "伊藤 誠", role: "keiri", title: "経理課 課長" },
+  { id: "u7", name: "渡辺 さくら", role: "jinji", title: "人事課" },
+  { id: "u8", name: "中村 大輔", role: "qa", title: "品質保証課 課長" },
+  { id: "u9", name: "小林 茂", role: "kobai", title: "購買課" },
+];
+
+// 役割ごとに、メニューに出す画面の一覧
+const DEPT_VIEWS = {
+  mkt:   [["similar", "類似品検索"], ["campaigns", "キャンペーン"], ["leads", "見込み客（リード）"]],
+  sales: [["sales-entry", "売上入力"], ["sales-compare", "売上の比較"], ["deals", "商談"], ["accounts", "取引先"]],
+  dev:   [["projects", "開発案件"], ["dfmea", "設計FMEA"], ["patent", "特許調査"], ["products", "製品台帳"]],
+  soumu: [["facilities", "設備・会議室予約"], ["documents", "社内文書"]],
+  keiri: [["invoices", "請求書"], ["expenses", "経費精算"]],
+  jinji: [["employees", "社員名簿"], ["approvals", "勤怠・休暇の承認"]],
+  qa:    [["fmea", "工程FMEA"], ["ai-dr", "AI：デザインレビュー資料"], ["ai-sop", "AI：検査作業手順書"], ["defects", "不具合報告"]],
+  kobai: [["products", "製品台帳"], ["partners", "取引先台帳"]],
+};
+
+// 類似品検索の見本結果（イメージ図。実際の検索はしていません）
+const SIM_KEYWORD = [
+  { title: "シートレール用 取付ブラケット（亜鉛めっき）", site: "parts-mart.example.jp", snippet: "板厚2.3mm、穴4か所。自動車用シート下に。", match: "web", shape: 0 },
+  { title: "汎用 L字ブラケット 板金加工品", site: "kanagu-shop.example.com", snippet: "小ロット対応。SPHC、表面処理選択可。", match: "web", shape: 1 },
+  { title: "シート下 補強プレート", site: "auto-oem.example.co.jp", snippet: "量産実績あり。曲げR指定可。", match: "image", shape: 2 },
+  { title: "制御盤用 取付金具", site: "denso-parts.example.jp", snippet: "", match: "image", shape: 3 },
+  { title: "ステンレス ブラケット 4穴", site: "metal-works.example.com", snippet: "", match: "image", shape: 1 },
+  { title: "板金ブラケットの設計のコツ（技術記事）", site: "monozukuri-note.example.jp", snippet: "曲げ部の割れを防ぐには、曲げRを板厚以上に。", match: "web", shape: 4 },
+];
+const SIM_PHOTO = [
+  { title: "取付ブラケット BR-200 互換品", site: "cheap-parts.example.com", snippet: "", match: "full", shape: 0 },
+  { title: "自動車部品 卸売カタログ", site: "wholesale.example.net", snippet: "", match: "partial", shape: 0 },
+  { title: "シートブラケット（海外製）", site: "global-parts.example.com", snippet: "", match: "similar", shape: 2 },
+  { title: "L字補強金具", site: "diy-kanagu.example.jp", snippet: "", match: "similar", shape: 1 },
+  { title: "プレス加工品の事例", site: "press-kogyo.example.co.jp", snippet: "", match: "similar", shape: 3 },
+];
+const SIM_LABELS = ["bracket", "板金部品", "自動車部品", "取付金具"];
+const MATCH = {
+  full: ["同じ写真を使用", "bad"], partial: ["写真の一部が一致", "warn"], similar: ["見た目が似ている", "info"],
+  image: ["画像検索", "info"], web: ["Webページ", "info"],
+};
+
+// 特許調査の見本（イメージ図。実在の特許ではありません）
+const PATENTS = [
+  { no: "特開2024-0XXX01", title: "車両用シートの取付ブラケット構造", applicant: "A社（架空）", year: 2024, status: "審査中", risk: "中",
+    point: "曲げ部に補強リブを設ける構造。BR-200 の曲げ部と形が近い。" },
+  { no: "特許第7XXXX02号", title: "板金部品の曲げ割れ防止方法", applicant: "B社（架空）", year: 2021, status: "登録", risk: "高",
+    point: "曲げRを板厚の1.5倍以上にする方法を請求している。設計変更の案と重なる可能性。" },
+  { no: "特開2022-0XXX03", title: "亜鉛めっき鋼板の溶接条件管理装置", applicant: "C社（架空）", year: 2022, status: "取下げ", risk: "低",
+    point: "取り下げ済みのため、権利は発生していない。" },
+  { no: "実用新案第3XXXX04号", title: "制御盤用取付金具", applicant: "D社（架空）", year: 2019, status: "期間満了", risk: "低",
+    point: "権利期間が終わっている。" },
+];
+const RISK_CLASS = { "高": "bad", "中": "warn", "低": "ok" };
+
+const NEWS = [
+  ["2026-10-20", "年末年始の休業日（12/28〜1/4）のお知らせ", "総務"],
+  ["2026-10-15", "ストレスチェックを11月に実施します", "人事"],
+  ["2026-10-08", "東和オート様 監査は11/12に決定", "品質保証"],
+  ["2026-10-01", "就業規則 第18条（テレワーク）を改定しました", "総務"],
+];
+
+const CAMPAIGNS = [
+  { name: "名古屋ものづくり展 出展", ch: "展示会", period: "11/5〜11/7", budget: 850000, leads: 0, status: "準備中" },
+  { name: "精密板金 技術資料DL", ch: "Web", period: "9/1〜10/31", budget: 120000, leads: 46, status: "実施中" },
+  { name: "既存顧客向け メールマガジン10月号", ch: "メール", period: "10/10", budget: 0, leads: 12, status: "完了" },
+  { name: "業界誌 広告（工業技術ジャーナル）", ch: "広告", period: "10月号", budget: 300000, leads: 7, status: "完了" },
+];
+const LEADS = [
+  { co: "株式会社青葉ロボティクス", person: "小林 様", src: "技術資料DL", score: 82, status: "営業へ引き渡し" },
+  { co: "北斗電装株式会社", person: "加藤 様", src: "メールマガジン", score: 64, status: "育成中" },
+  { co: "有限会社みどり工業", person: "吉田 様", src: "業界誌広告", score: 41, status: "育成中" },
+  { co: "株式会社ソラ医療機器", person: "山本 様", src: "技術資料DL", score: 77, status: "営業へ引き渡し" },
+  { co: "東邦農機株式会社", person: "松本 様", src: "展示会（昨年）", score: 30, status: "保留" },
+];
+
+const STAGES = ["見込み", "提案", "見積提出", "交渉", "受注"];
+let DEALS = [
+  { id: 1, co: "東和オート株式会社", item: "BR-200 取付ブラケット 量産", amt: 4800000, stage: 3, owner: "鈴木" },
+  { id: 2, co: "株式会社青葉ロボティクス", item: "アーム用 板金カバー試作", amt: 650000, stage: 1, owner: "鈴木" },
+  { id: 3, co: "株式会社ソラ医療機器", item: "筐体フレーム", amt: 2200000, stage: 0, owner: "鈴木" },
+  { id: 4, co: "北斗電装株式会社", item: "制御盤ブラケット 追加", amt: 980000, stage: 2, owner: "鈴木" },
+  { id: 5, co: "大和建機株式会社", item: "ステップ部品 年間契約", amt: 7300000, stage: 4, owner: "鈴木" },
+];
+const ACCOUNTS = [
+  { co: "東和オート株式会社", ind: "自動車部品", since: 2015, sales: 38400000 },
+  { co: "大和建機株式会社", ind: "建設機械", since: 2018, sales: 21600000 },
+  { co: "北斗電装株式会社", ind: "電装品", since: 2021, sales: 5200000 },
+];
+
+// ---- 製品と取引先の台帳（購買・開発と共有）。営業の売上入力では、ここからプルダウンで選びます ----
+const PARTNERS = [
+  { id: "c1", name: "東和オート株式会社", kind: "得意先", ind: "自動車部品" },
+  { id: "c2", name: "大和建機株式会社", kind: "得意先", ind: "建設機械" },
+  { id: "c3", name: "北斗電装株式会社", kind: "得意先", ind: "電装品" },
+  { id: "c4", name: "株式会社青葉ロボティクス", kind: "得意先", ind: "ロボット" },
+  { id: "s1", name: "中部鋼材株式会社", kind: "仕入先", ind: "鋼材" },
+  { id: "s2", name: "東海めっき工業株式会社", kind: "仕入先", ind: "表面処理" },
+];
+const PRODUCTS = [
+  { id: "p1", code: "BR-200", name: "シート取付ブラケット", price: 1200, unit: "個", status: "量産", supplier: "s1", dev: "BR-200 取付ブラケット" },
+  { id: "p2", code: "ST-310", name: "ステップ部品", price: 3800, unit: "個", status: "量産", supplier: "s1", dev: "" },
+  { id: "p3", code: "CB-120", name: "制御盤ブラケット", price: 950, unit: "個", status: "量産", supplier: "s2", dev: "" },
+  { id: "p4", code: "AC-050", name: "アーム用板金カバー", price: 6500, unit: "個", status: "試作", supplier: "s1", dev: "板金カバー試作" },
+  { id: "p5", code: "MT-900", name: "金型の改修", price: 180000, unit: "式", status: "量産", supplier: "", dev: "" },
+];
+const SALES_REPS = [{ id: "u3", name: "鈴木 健太" }, { id: "r2", name: "木村 彩" }, { id: "r3", name: "松本 翔太" }];
+const FISCAL_START_MONTH = 4; // 年度の始まり（4月）。四半期もここから数えます
+
+// 見本の売上データを作る（毎回同じ結果になるよう、決まった数列で作っています）
+function makeSampleSales() {
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const pairs = [["p1", "c1", 400, 900], ["p2", "c2", 60, 200], ["p3", "c3", 150, 500], ["p4", "c4", 3, 12], ["p5", "c1", 1, 1], ["p1", "c2", 100, 300]];
+  const out = [], now = new Date(); now.setHours(12, 0, 0, 0);
+  for (let back = 800; back >= 0; back--) {
+    const d = new Date(now); d.setDate(d.getDate() - back);
+    if (d.getDay() === 0 || d.getDay() === 6) continue; // 土日は休み
+    const growth = 1 + (800 - back) / 1600; // 少しずつ伸びている会社という設定
+    SALES_REPS.forEach((r, ri) => {
+      if (rnd() < 0.45) return;
+      const [pid, cid, lo, hi] = pairs[Math.floor(rnd() * pairs.length)];
+      const prod = PRODUCTS.find(x => x.id === pid);
+      const qty = Math.max(1, Math.round((lo + rnd() * (hi - lo)) * growth * (ri === 1 ? 1.15 : 1)));
+      out.push({ id: "s" + out.length, date: ymd(d), rep: r.id, product: pid, customer: cid, qty, price: prod.price, note: "" });
+    });
+  }
+  return out;
+}
+
+const PROJECTS = [
+  { name: "BR-200 取付ブラケット（東和オート向け）", phase: "DR2（詳細設計）", due: "2026-11-20", progress: 70, status: "順調" },
+  { name: "板金カバー試作（青葉ロボティクス）", phase: "構想設計", due: "2026-12-10", progress: 25, status: "順調" },
+  { name: "溶接治具の改良", phase: "試作評価", due: "2026-10-31", progress: 85, status: "遅れ気味" },
+];
+const DFMEA = [
+  { item: "取付穴", func: "ボルトで車体に固定する", mode: "穴位置ずれ", effect: "組付け不可", cause: "公差設定の不足", s: 7, o: 3, d: 4, action: "公差解析を実施し、図面公差を見直す" },
+  { item: "曲げ部", func: "荷重を支える", mode: "曲げ部の割れ", effect: "部品脱落", cause: "曲げRが小さすぎる", s: 9, o: 3, d: 5, action: "曲げRを板厚の1.5倍以上に変更し、耐久試験で確認" },
+  { item: "表面処理", func: "さびを防ぐ", mode: "塗膜はがれ", effect: "外観不良・腐食", cause: "処理仕様の指定漏れ", s: 5, o: 2, d: 3, action: "図面に処理仕様と膜厚を明記" },
+];
+const PFMEA = [
+  { proc: "切断", mode: "寸法不足", effect: "後工程で穴位置ずれ", cause: "ストッパーのゆるみ", s: 6, o: 4, d: 3, ctrl: "始業時の初品寸法確認", action: "ストッパーに締付トルク管理を追加" },
+  { proc: "プレス曲げ", mode: "曲げ角度不良", effect: "組付け不可", cause: "金型の摩耗", s: 7, o: 5, d: 4, ctrl: "1時間ごと角度ゲージ確認", action: "金型の定期交換基準を設定（5万ショット）" },
+  { proc: "穴あけ", mode: "バリ残り", effect: "作業者のけが・組付け不良", cause: "ドリル刃の摩耗", s: 6, o: 6, d: 5, ctrl: "目視確認", action: "バリ取り工程の追加と、指先チェックを手順化" },
+  { proc: "溶接", mode: "溶け込み不足", effect: "強度不足による破損", cause: "電流条件のずれ", s: 9, o: 3, d: 7, ctrl: "抜き取りで破壊試験（1回/日）", action: "溶接条件の記録を自動化し、断面マクロ試験を週1回追加" },
+  { proc: "表面処理", mode: "膜厚不足", effect: "早期のさび", cause: "前処理の不足", s: 5, o: 3, d: 4, ctrl: "膜厚計で抜き取り", action: "前処理液の濃度管理を日次で記録" },
+  { proc: "最終検査", mode: "不良品の流出", effect: "お客様での不具合", cause: "検査項目の見落とし", s: 8, o: 2, d: 6, ctrl: "チェックシート", action: "検査作業手順書を写真付きで整備" },
+];
+const DEFECTS = [
+  { date: "2026-10-18", part: "BR-200", desc: "穴周辺のバリ（3個/500個）", where: "社内・最終検査", status: "対策中" },
+  { date: "2026-10-09", part: "ST-55", desc: "曲げ角度 +1.5°（1ロット）", where: "お客様受入検査", status: "対策中" },
+  { date: "2026-09-27", part: "CV-12", desc: "塗装のはがれ（2個）", where: "社内・工程内", status: "完了" },
+];
+
+const FACILITIES = [
+  { name: "第1会議室（8名）", slots: { "9:00": "", "10:00": "営業会議", "13:00": "", "15:00": "東和オート様 来社" } },
+  { name: "第2会議室（4名）", slots: { "9:00": "", "10:00": "", "13:00": "DR2 事前打合せ", "15:00": "" } },
+  { name: "社用車（ハイエース）", slots: { "9:00": "納品（大和建機）", "10:00": "納品（大和建機）", "13:00": "", "15:00": "" } },
+  { name: "三次元測定機", slots: { "9:00": "品証", "10:00": "", "13:00": "", "15:00": "開発" } },
+];
+const DOCS = [
+  { name: "就業規則", ver: "第7版", updated: "2026-10-01", owner: "総務" },
+  { name: "賃金規程", ver: "第4版", updated: "2026-04-01", owner: "総務" },
+  { name: "育児・介護休業規程", ver: "第3版", updated: "2025-10-01", owner: "人事" },
+  { name: "旅費規程", ver: "第2版", updated: "2024-04-01", owner: "経理" },
+  { name: "品質マニュアル", ver: "第5版", updated: "2026-06-15", owner: "品質保証" },
+];
+
+let INVOICES = [
+  { no: "INV-2610-031", to: "東和オート株式会社", amt: 3256000, due: "2026-11-30", status: "未入金" },
+  { no: "INV-2610-028", to: "大和建機株式会社", amt: 1825000, due: "2026-10-31", status: "未入金" },
+  { no: "INV-2609-022", to: "北斗電装株式会社", amt: 440000, due: "2026-10-20", status: "期限超過" },
+  { no: "INV-2609-019", to: "東和オート株式会社", amt: 2981000, due: "2026-10-31", status: "入金済" },
+];
+let EXPENSES = [
+  { id: 1, who: "鈴木 健太", what: "東和オート訪問 交通費", amt: 4620, status: "申請中" },
+  { id: 2, who: "佐藤 美咲", what: "展示会ブース備品", amt: 38500, status: "申請中" },
+  { id: 3, who: "高橋 翔", what: "試作用材料", amt: 12800, status: "承認済" },
+];
+
+const EMPLOYEES = [
+  ["山田 一郎", "経営", "代表取締役", "2008-04"], ["伊藤 誠", "経理", "課長", "2010-04"],
+  ["中村 大輔", "品質保証", "課長", "2012-10"], ["鈴木 健太", "営業", "主任", "2016-04"],
+  ["田中 由美", "総務", "", "2017-07"], ["高橋 翔", "開発", "", "2019-04"],
+  ["佐藤 美咲", "マーケティング", "", "2021-04"], ["渡辺 さくら", "人事", "", "2022-01"],
+];
+let LEAVES = [
+  { id: 1, who: "高橋 翔", kind: "年次有給休暇", date: "2026-10-30", status: "申請中" },
+  { id: 2, who: "田中 由美", kind: "半日休暇（午後）", date: "2026-11-02", status: "申請中" },
+];
+
+// 就業規則（見本。厚生労働省のモデル就業規則を参考にした簡略版）
+const RULES = [
+  { ch: "第1章 総則", arts: [
+    ["第1条（目的）", "この規則は、株式会社みらい精機の従業員の労働条件と服務規律を定めるものです。"],
+    ["第2条（適用範囲）", "この規則は、正社員に適用します。パートタイマーについては別に定めます。"],
+  ]},
+  { ch: "第2章 勤務時間と休憩", arts: [
+    ["第10条（労働時間）", "1日の所定労働時間は8時間、1週間は40時間とします。始業は8時30分、終業は17時30分です。"],
+    ["第11条（休憩）", "12時00分から13時00分までの1時間を休憩とします。"],
+    ["第12条（出退勤の記録）", "出勤と退勤は、勤怠システムで本人が記録します。位置情報（GPS）が使えないときは、手入力し、所属長の承認を受けます。"],
+  ]},
+  { ch: "第3章 休日と休暇", arts: [
+    ["第15条（休日）", "土曜日、日曜日、国民の祝日、年末年始、夏季休暇を休日とします。"],
+    ["第16条（年次有給休暇）", "6か月継続して勤務し、出勤率が8割以上の人には10日の年次有給休暇を与えます。申請は勤怠システムから行います。"],
+    ["第18条（テレワーク）", "会社が認めた場合、自宅などで勤務できます。その日の出退勤は手入力で記録します。（2026年10月改定）"],
+  ]},
+  { ch: "第4章 服務規律", arts: [
+    ["第20条（遵守事項）", "従業員は、会社の秘密を守り、お客様の図面や情報を許可なく持ち出してはいけません。"],
+    ["第21条（ハラスメントの禁止）", "パワーハラスメント、セクシュアルハラスメントなど、相手を傷つける言動をしてはいけません。相談窓口は人事課です。"],
+  ]},
+  { ch: "第5章 安全衛生", arts: [
+    ["第30条（安全の確保）", "プレス・溶接の作業では、決められた保護具を必ず着けます。"],
+    ["第31条（健康診断）", "毎年1回、健康診断を受けます。費用は会社が負担します。"],
+  ]},
+];
+
+// ---------- 2. 状態（いまどの画面を見ているか など） ----------
+const state = {
+  pwPrompt: false, tab: 0, calMonth: null, calDay: null, card: null, cardMemo: {},
+  todos: [], cards: [], events: [],
+  user: null,     // ログイン中の人
+  view: "home",   // いま見ている画面
+  viewDept: null, // 最高権限者が他部署を見るとき
+  punches: load("seed.punches", []), // 打刻の記録
+  ruleQuery: "",
+  dr: null, sop: null,
+  manual: false, gpsMsg: "", patentShown: false,
+  salesUnit: "month", salesWho: "all", salesAdded: load("seed.salesAdded", []), sf: null,
+  simTab: "keyword", simShown: null, simPhoto: "", simQuery: "シート ブラケット 板金 亜鉛めっき",
+  simNote: "自動車のシート下に付ける板金ブラケット。厚さ2.3mm、亜鉛めっき。取付穴4つ。",
+};
+
+// この見本は画面が切り替わるだけです。入れた内容はどこにも保存されません（ページを開き直すと元にもどります）
+function load(key, fallback) { return fallback; }
+function save(key, value) { /* 保存しない */ }
+
+// ---------- 見本：予定・ToDo・名刺（今日を基準に並べます） ----------
+const dayOf = n => { const d = new Date(); d.setDate(d.getDate() + n); return ymd(d); };
+function seedSamples() {
+  state.events = [
+    { id: "e1", day: dayOf(0), time: "10:00〜11:00", title: "東和オート様 来社（BR-200 打合せ）", place: "第1会議室", company: true },
+    { id: "e2", day: dayOf(0), time: "15:00〜15:30", title: "設計DR2 事前確認", place: "", company: false },
+    { id: "e3", day: dayOf(1), time: "終日", title: "名古屋ものづくり展（出展）", place: "ポートメッセなごや", company: true },
+    { id: "e4", day: dayOf(3), time: "13:30〜15:00", title: "経営会議", place: "役員室", company: true },
+    { id: "e5", day: dayOf(6), time: "終日", title: "本社工場 設備点検（休業）", place: "", company: true },
+    { id: "e6", day: dayOf(9), time: "11:00〜12:00", title: "銀行 面談", place: "", company: false },
+    { id: "e7", day: dayOf(-2), time: "14:00〜15:00", title: "北陸精機様 訪問", place: "", company: false },
+  ];
+  state.todos = [
+    { id: "t1", title: "東和オートに見積書を送る", due: dayOf(0), done: false, who: "自分" },
+    { id: "t2", title: "就業規則 第18条の改定を確認", due: dayOf(-1), done: false, who: "自分" },
+    { id: "t3", title: "展示会の名刺をまとめて登録", due: dayOf(2), done: false, who: "自分" },
+    { id: "t4", title: "検査成績書を用意（中村さんに依頼）", due: dayOf(4), done: false, who: "中村 大輔" },
+    { id: "t5", title: "月次の売上を確認", due: "", done: true, who: "自分" },
+  ];
+  state.cards = [
+    { id: "c1", name: "山本 健二", kana: "やまもと けんじ", company: "東和オート株式会社", dept: "購買部", pos: "部長", email: "k.yamamoto@towa-auto.example.jp", tel: "052-000-1111", met: dayOf(-20), by: "鈴木 健太",
+      memos: [["鈴木 健太", dayOf(-20), "展示会で名刺交換。シート下ブラケットの新規案件に興味あり。"], ["中村 大輔", dayOf(-6), "品質監査の窓口も山本部長とのこと。11月中旬に来社予定。"], ["山田 一郎", dayOf(-1), "来社時に工場見学も案内する。"]] },
+    { id: "c2", name: "鈴木 花子", kana: "すずき はなこ", company: "中部鋼材株式会社", dept: "営業部", pos: "主任", email: "h.suzuki@chubu-kozai.example.jp", tel: "052-000-2222", met: dayOf(-45), by: "小林 茂",
+      memos: [["小林 茂", dayOf(-45), "SPHC 2.3mm の価格改定の連絡あり。来期の見積を依頼。"]] },
+    { id: "c3", name: "Lee Min-jun", kana: "", company: "Global Parts Co., Ltd.", dept: "Sales", pos: "Manager", email: "mj.lee@global-parts.example.com", tel: "+82-2-000-3333", met: dayOf(-3), by: "佐藤 美咲",
+      memos: [["佐藤 美咲", dayOf(-3), "海外の互換品メーカー。類似品検索で見つけた会社と同じ。価格帯を聞いた。"]] },
+    { id: "c4", name: "田村 優", kana: "たむら ゆう", company: "みなと電装株式会社", dept: "技術部", pos: "", email: "", tel: "045-000-4444", met: dayOf(-60), by: "高橋 翔", memos: [] },
+  ];
+}
+// ---------- 3. 小さな道具 ----------
+const yen = n => "¥" + n.toLocaleString("ja-JP");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pill = (text, kind) => `<span class="pill ${kind}">${esc(text)}</span>`;
+const today = () => new Date().toISOString().slice(0, 10);
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const parseYmd = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d, 12); };
+const man = n => (Math.round(n / 1000) / 10).toLocaleString("ja-JP") + "万円"; // 1万円単位（小数1けた）
+const hhmm = d => d.toTimeString().slice(0, 5);
+function statusPill(s) {
+  const map = { "順調": "ok", "完了": "ok", "承認済": "ok", "入金済": "ok", "実施中": "ok", "受注": "ok", "営業へ引き渡し": "ok",
+    "遅れ気味": "warn", "対策中": "warn", "申請中": "warn", "未入金": "warn", "準備中": "info", "育成中": "info", "保留": "info",
+    "期限超過": "bad", "差し戻し": "bad", "要承認": "warn" };
+  return pill(s, map[s] || "info");
+}
+function rpnPill(r) { return pill("RPN " + r, r >= 150 ? "bad" : r >= 80 ? "warn" : "ok"); }
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = msg; t.setAttribute("role", "status");
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+function distanceM(a, b) { // 2点間の距離（メートル）
+  const R = 6371000, toRad = x => x * Math.PI / 180;
+  const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return Math.round(2 * R * Math.asin(Math.sqrt(h)));
+}
+
+// ---------- 売上の集計（日・週・月・四半期・年） ----------
+const UNITS = { day: "日", week: "週", month: "月", quarter: "四半期", year: "年" };
+const BAR_COUNT = { day: 14, week: 12, month: 12, quarter: 8, year: 3 };
+// その日が入る期間の、最初の日
+function periodStart(d, unit) {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
+  if (unit === "week") x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); // 月曜はじまり
+  if (unit === "month") x.setDate(1);
+  if (unit === "quarter" || unit === "year") {
+    const fromStart = (x.getMonth() - (FISCAL_START_MONTH - 1) + 12) % 12; // 年度の何か月目か（0から）
+    const back = unit === "quarter" ? fromStart % 3 : fromStart;
+    x.setDate(1); x.setMonth(x.getMonth() - back);
+  }
+  return x;
+}
+// 期間を n 個ずらす（-1 なら1つ前）
+function shiftPeriod(start, unit, n) {
+  const x = new Date(start);
+  if (unit === "day") x.setDate(x.getDate() + n);
+  if (unit === "week") x.setDate(x.getDate() + 7 * n);
+  if (unit === "month") x.setMonth(x.getMonth() + n);
+  if (unit === "quarter") x.setMonth(x.getMonth() + 3 * n);
+  if (unit === "year") x.setFullYear(x.getFullYear() + n);
+  return x;
+}
+function fiscalYear(d) { return d.getMonth() + 1 >= FISCAL_START_MONTH ? d.getFullYear() : d.getFullYear() - 1; }
+function periodLabel(start, unit, short) {
+  const m = start.getMonth() + 1, w = "日月火水木金土"[start.getDay()];
+  if (unit === "day") return short ? `${m}/${start.getDate()}` : `${m}月${start.getDate()}日（${w}）`;
+  if (unit === "week") return short ? `${m}/${start.getDate()}〜` : `${m}月${start.getDate()}日の週`;
+  if (unit === "month") return short ? `${m}月` : `${start.getFullYear()}年${m}月`;
+  const fy = fiscalYear(start);
+  if (unit === "quarter") { const q = Math.floor(((m - FISCAL_START_MONTH + 12) % 12) / 3) + 1; return short ? `${String(fy).slice(2)}Q${q}` : `${fy}年度 第${q}四半期`; }
+  return `${fy}年度`;
+}
+function allSales() { return makeSampleSalesCached().concat(state.salesAdded); }
+let SAMPLE_SALES = null;
+function makeSampleSalesCached() { return SAMPLE_SALES || (SAMPLE_SALES = makeSampleSales()); }
+const amountOf = s => s.qty * s.price;
+// 期間 [start, 次の期間の start) の売上だけを取り出す
+function inPeriod(rows, start, unit) {
+  const a = ymd(start), b = ymd(shiftPeriod(start, unit, 1));
+  return rows.filter(s => s.date >= a && s.date < b);
+}
+const sum = rows => rows.reduce((t, s) => t + amountOf(s), 0);
+function deltaText(now, before) {
+  if (!before) return `<span class="muted">比べる売上なし</span>`;
+  const r = Math.round((now / before - 1) * 1000) / 10;
+  return `<span class="delta ${r >= 0 ? "up" : "down"}">${r >= 0 ? "+" : ""}${r}%</span>`;
+}
+const nameOf = (list, id) => (list.find(x => x.id === id) || {}).name || "—";
+
+// ---------- 4. 画面の部品 ----------
+const LOGO = `<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="currentColor" opacity=".15"/><path d="M16 26 V14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M16 15 C 16 9, 11 7, 7 8 C 7 13, 11 16, 16 15 Z" fill="currentColor"/><path d="M16 18 C 16 13, 20 11, 25 12 C 24 17, 20 19, 16 18 Z" fill="currentColor" opacity=".7"/></svg>`;
+
+function renderLogin() {
+  return `<div class="login"><div class="login-inner" style="max-width:440px">
+    <div class="logo" style="color:var(--brand)">${LOGO}<span style="font-size:1.3rem">the seed</span></div>
+    <span class="sample-flag">見本：画面が切り替わるだけです</span>
+    <section class="panel" style="display:grid;gap:12px">
+      <h1>ログイン</h1>
+      <div class="field"><label for="lg-no">社員番号</label><input id="lg-no" value="A-001" autocomplete="off"></div>
+      <div class="field"><label for="lg-pw">パスワード</label><input id="lg-pw" type="password" value="sample-password"></div>
+      <div class="field"><label for="lg-role">役割</label>
+        <select id="lg-role">${Object.entries(ROLES).map(([k, r]) => `<option value="${k}" ${k === "admin" ? "selected" : "disabled"}>${r.label}</option>`).join("")}</select></div>
+      <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked> ログインしたままにする（30日）</label>
+      <button class="btn" data-act="login" data-id="u1">ログイン</button>
+      <span class="small"><a href="#" data-act="noop">パスワードを忘れたとき</a>（社員番号を入れると、登録メールに再発行のリンクが届きます）</span>
+    </section>
+    <p class="small muted">この見本では、最高権限者の画面だけを見られます。本物では、最高権限者が決めた社員番号と役割でログインし、役割によってタブは限定されます。会社・人物・数字はすべて架空です。</p>
+  </div></div>`;
+}
+
+// ログイン直後の「パスワードを変更しますか？」
+function renderPrompt() {
+  if (!state.pwPrompt) return "";
+  return `<div class="modal-back"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="pw-t">
+    <h2 id="pw-t">パスワードを変更しますか？</h2>
+    <p class="small muted">定期的に変えると、なりすましを防げます。あとからでも、マイページ・勤怠のいちばん下で変えられます。</p>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn secondary" data-act="pw-no">このまま使う</button>
+      <button class="btn" data-act="pw-yes">変更する</button>
+    </div></div></div>`;
+}
+
+function navButton(view, label, dept, count) {
+  const current = state.view === view && (state.viewDept || null) === (dept || null);
+  return `<button class="nav-btn" data-act="nav" data-view="${view}" data-dept="${dept || ""}" ${current ? 'aria-current="page"' : ""}>
+    <span class="dot"></span>${esc(label)}${count ? `<span class="badge-count">${count}</span>` : ""}</button>`;
+}
+
+function pendingApprovals() {
+  return state.punches.filter(p => p.method === "手入力" && p.status === "要承認").length + LEAVES.filter(l => l.status === "申請中").length;
+}
+
+// 役割ごとのタブ（最高権限者はすべての部署のタブが見えます）
+function tabGroups() {
+  const groups = [
+    { label: "共通", items: [["home", "ホーム"], ["attendance", "マイページ・勤怠"], ["calendar", "カレンダー"], ["todo", "ToDo"], ["cards", "名刺"], ["rules", "就業規則・社内規程"]] },
+    { label: "管理", items: [["users", "社員と権限"], ["import", "ファイルの取り込み"]] },
+  ];
+  Object.keys(DEPT_VIEWS).forEach(d => groups.push({ label: ROLES[d].label, dept: d, items: DEPT_VIEWS[d] }));
+  return groups;
+}
+function renderTabs() {
+  const groups = tabGroups();
+  const g = groups[state.tab] || groups[0];
+  return `<nav class="tabs" aria-label="メニュー">
+    <div class="tab-row" role="tablist">${groups.map((x, i) => `<button class="tab" role="tab" aria-selected="${i === state.tab}" data-act="tab" data-i="${i}">${esc(x.label)}</button>`).join("")}</div>
+    <div class="tab-items">${g.items.map(([v, l]) => navButton(v, l, g.dept, v === "approvals" ? pendingApprovals() : 0)).join("")}</div>
+  </nav>`;
+}
+
+function renderApp() {
+  const u = state.user;
+  return `<div class="app">
+    <header class="topbar">
+      <div class="logo">${LOGO}<span>the seed</span></div>
+      <span class="company">${COMPANY}</span>
+      <span class="spacer"></span>
+      <div class="who"><span class="avatar">${esc(u.name[0])}</span><span>${esc(u.name)}<br><span style="opacity:.8;font-size:.78rem">${ROLES[u.role].label}・${esc(u.title)}</span></span></div>
+      <button class="btn-ghost-light" data-act="logout">ログアウト</button>
+    </header>
+    <div class="demo-note">見本です。画面が切り替わるだけで、入れた内容は保存されません。<strong>役割によってタブは限定されます</strong>（この見本は最高権限者の画面です）。</div>
+    ${renderTabs()}
+    <main class="main" id="main">${renderView()}</main>
+    ${renderPrompt()}
+  </div>`;
+}
+
+function head(title, crumb, extra = "") {
+  return `<div class="page-head"><div class="crumb">${esc(crumb)}</div><h1>${esc(title)}</h1>${extra}</div>`;
+}
+function table(cols, rows) {
+  return `<div class="table-wrap"><table><thead><tr>${cols.map(c => `<th class="${c.r ? "r" : ""}">${esc(c.h)}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${r.map((cell, i) => `<td class="${cols[i].r ? "r num" : ""}">${cell}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+// ---------- 5. 各画面 ----------
+// 月のカレンダー（日曜はじまり）
+function monthCalendar(compact) {
+  const base = state.calMonth || today().slice(0, 7);
+  const [y, m] = base.split("-").map(Number);
+  const first = new Date(y, m - 1, 1, 12);
+  const start = new Date(first); start.setDate(1 - first.getDay());
+  const sel = state.calDay || today();
+  let rows = "";
+  for (let w = 0; w < 6; w++) {
+    let cells = "";
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start); d.setDate(start.getDate() + w * 7 + i);
+      const k = ymd(d);
+      const evs = state.events.filter(e => e.day === k);
+      const tds = state.todos.filter(t => t.due === k);
+      const cls = [d.getMonth() !== m - 1 && "other", k === today() && "today", k === sel && "selected", i === 0 && "sun", i === 6 && "sat"].filter(Boolean).join(" ");
+      cells += `<td class="${cls}"><button class="cal-day" data-act="cal-day" data-day="${k}"><span class="cal-num">${d.getDate()}</span>${
+        compact ? (evs.length || tds.length ? '<span class="cal-dot"></span>' : "")
+        : evs.slice(0, 3).map(e => `<span class="cal-ev ${e.company ? "company" : "private"}">${e.time === "終日" ? "" : e.time.slice(0, 5) + " "}${esc(e.title)}</span>`).join("") + tds.slice(0, 2).map(t => `<span class="cal-todo">☐ ${esc(t.title)}</span>`).join("")
+      }</button></td>`;
+    }
+    rows += `<tr>${cells}</tr>`;
+    const nd = new Date(start); nd.setDate(start.getDate() + (w + 1) * 7);
+    if (nd.getMonth() !== m - 1 && w >= 3) break;
+  }
+  return `<div class="cal${compact ? " compact" : ""}">
+    <div class="cal-head"><button class="btn secondary small" data-act="cal-month" data-n="-1" aria-label="前の月">‹</button><strong>${y}年${m}月</strong><button class="btn secondary small" data-act="cal-month" data-n="1" aria-label="次の月">›</button><button class="btn-link small" data-act="cal-month" data-n="0">今月</button></div>
+    <table class="cal-table"><thead><tr>${["日", "月", "火", "水", "木", "金", "土"].map((d, i) => `<th class="${i === 0 ? "sun" : i === 6 ? "sat" : ""}">${d}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function dayAgenda(day) {
+  const evs = state.events.filter(e => e.day === day);
+  const tds = state.todos.filter(t => t.due === day);
+  if (!evs.length && !tds.length) return `<p class="muted">予定はありません。</p>`;
+  return `<div class="list">${evs.map(e => `<div class="list-item"><span class="num small" style="min-width:7.5em">${e.time}</span><span><strong>${esc(e.title)}</strong>${e.company ? " " + pill("みんなの予定", "warn") : ""}${e.place ? `<br><span class="small muted">場所：${esc(e.place)}</span>` : ""}</span></div>`).join("")}
+    ${tds.map(t => `<div class="list-item"><button class="todo-check" data-act="todo-toggle" data-id="${t.id}">${t.done ? "✓" : ""}</button><span>ToDo：${esc(t.title)}</span></div>`).join("")}</div>`;
+}
+const mdLabel = k => { const [, m, d] = k.split("-").map(Number); return `${m}月${d}日`; };
+function todoLine(t) {
+  const due = t.due ? pill(mdLabel(t.due), t.due < today() ? "bad" : t.due === today() ? "warn" : "info") : pill("期限なし", "");
+  return `<div class="list-item"><button class="todo-check" data-act="todo-toggle" data-id="${t.id}" aria-label="${t.done ? "まだにもどす" : "済みにする"}">${t.done ? "✓" : ""}</button>
+    ${due}<span style="${t.done ? "text-decoration:line-through;color:var(--muted)" : ""}">${esc(t.title)}</span>${t.who !== "自分" ? `<span class="small muted">やる人：${esc(t.who)}</span>` : ""}</div>`;
+}
+
+const VIEWS = {
+  calendar() {
+    const day = state.calDay || today();
+    return head("カレンダー", "共通") + `<section class="panel">${monthCalendar(false)}
+      <p class="small muted" style="margin-top:6px"><span class="cal-ev private">自分だけの予定</span>　<span class="cal-ev company">社員みんなの予定</span>　<span class="cal-todo">☐ 期限のある ToDo</span></p></section>
+      <section class="panel"><h2>${mdLabel(day)}の予定</h2>${dayAgenda(day)}
+      <div style="margin-top:12px"><button class="btn secondary small" data-act="toast" data-msg="見本では予定を入れられません（本物では日時・場所・見せる人を決めて入れます）">＋ 予定を入れる</button></div></section>`;
+  },
+  todo() {
+    const open = state.todos.filter(t => !t.done);
+    return head("ToDo", "共通") + `<section class="panel"><h2>やることを足す</h2>
+      <div class="row"><div class="field" style="flex:2 1 240px"><label for="td-t">やること</label><input id="td-t" placeholder="例：東和オートに見積書を送る"></div>
+      <div class="field"><label for="td-d">期限</label><input id="td-d" type="date"></div>
+      <div class="field"><label for="td-w">やる人</label><select id="td-w"><option>自分</option>${USERS.slice(1).map(u => `<option>${esc(u.name)}さんに頼む</option>`).join("")}</select></div></div>
+      <div class="row"><button class="btn" data-act="todo-add">足す</button></div>
+      <p class="small muted">ToDo は、やる人と頼んだ人だけが見られます。期限のあるものはカレンダーにも出ます。</p></section>
+      <section class="panel"><h2>自分のやること（${open.length}件）</h2><div class="list">${open.map(todoLine).join("") || '<p class="muted">いまはありません。</p>'}</div></section>
+      <section class="panel"><h2>済んだこと</h2><div class="list">${state.todos.filter(t => t.done).map(todoLine).join("") || '<p class="muted">まだありません。</p>'}</div></section>`;
+  },
+  cards() {
+    return head("名刺", "共通") + `<section class="panel"><div class="row">
+      <div class="field" style="flex:1 1 240px"><label for="cd-q">さがす（名前・会社名・部署・メール）</label><input id="cd-q" placeholder="例：東和オート"></div>
+      <span class="spacer"></span><button class="btn" data-act="toast" data-msg="本物では、スマホで名刺を撮ると社内AIが文字を読み取って入力欄を埋めます">名刺を登録する</button></div>
+      <p class="small muted">会社でもらった名刺は、社員みんなで見られます。どの名刺にも、だれでもメモを残せます。</p></section>
+      <section class="panel">${table([{ h: "名前" }, { h: "会社・部署・役職" }, { h: "連絡先" }, { h: "もらった日" }, { h: "登録した人" }, { h: "メモ", r: true }],
+        state.cards.map(c => [`<button class="btn-link" data-act="card-open" data-id="${c.id}"><strong>${esc(c.name)}</strong></button>${c.kana ? `<br><span class="small muted">${esc(c.kana)}</span>` : ""}`,
+          `${esc(c.company)}<br><span class="small muted">${esc([c.dept, c.pos].filter(Boolean).join("　"))}</span>`,
+          `<span class="small">${esc(c.email)}${c.email ? "<br>" : ""}${esc(c.tel)}</span>`, `<span class="num small">${c.met.replace(/-/g, "/")}</span>`, esc(c.by), String(c.memos.length)]))}</section>`;
+  },
+  card() {
+    const c = state.cards.find(x => x.id === state.card) || state.cards[0];
+    const rows = [["会社名", c.company], ["部署", c.dept], ["役職", c.pos], ["メール", c.email], ["電話", c.tel], ["もらった日", c.met.replace(/-/g, "/")], ["登録した人", c.by]].filter(([, v]) => v);
+    return head(c.name, "名刺") + `<p class="small"><button class="btn-link" data-act="nav" data-view="cards" data-dept="">← 名刺の一覧</button></p>
+      <section class="panel biz-card"><dl>${rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+        <div class="card-photo" aria-hidden="true"><strong>${esc(c.company)}</strong><span class="small">${esc(c.dept)} ${esc(c.pos)}</span><span style="font-size:1.2rem">${esc(c.name)}</span><span class="small">${esc(c.tel)}</span></div></section>
+      <div class="row"><button class="btn secondary small" data-act="toast" data-msg="本物では、スマホの連絡先に入れるファイル（vCard）が届きます">スマホの連絡先に入れる</button></div>
+      <section class="panel"><h2>メモ（${c.memos.length}件）</h2><p class="small muted">だれでも書けます。会った日・話したこと・次にすること など。書いた人の名前が残ります。</p>
+        <div class="field"><label for="memo" class="sr-only">メモ</label><textarea id="memo" rows="3" placeholder="例：展示会で再会。来月に工場見学の約束。"></textarea></div>
+        <div class="row"><button class="btn" data-act="memo-add" data-id="${c.id}">メモを残す</button></div>
+        <div class="list" style="margin-top:10px">${c.memos.slice().reverse().map(([who, d, body]) => `<div class="list-item" style="display:block"><span class="small muted">${esc(who)}　${d.replace(/-/g, "/")}</span><p style="white-space:pre-wrap">${esc(body)}</p></div>`).join("")}</div></section>`;
+  },
+  import() {
+    return head("ファイルの取り込み", "管理") + `<section class="panel"><h2>1. 取り込み先とファイルを選ぶ</h2>
+      <div class="row"><div class="field"><label for="im-t">取り込み先</label><select id="im-t"><option>製品台帳</option><option>取引先台帳</option><option>売上</option><option>FMEA</option></select></div>
+      <div class="field"><label>ファイル（Excel .xlsx・CSV・PDF）</label><span class="filebox">製品一覧_2026.xlsx</span></div></div>
+      <p class="small muted">Google スプレッドシートは .xlsx で保存してから選びます。CAD 図面（DXF・STL）は製品台帳の各製品から登録します。ファイルは社内のサーバーの中だけで読みます。</p></section>
+      <section class="panel"><h2>2. 列を合わせる（見出しから自動）</h2>${table([{ h: "the seed の項目" }, { h: "ファイルの列" }], [["品番", "A列：品番"], ["製品名", "B列：品名"], ["単位", "C列：単位"], ["標準単価", "D列：単価（円）"], ["仕入先", "E列：仕入先"]])}</section>
+      <section class="panel"><div class="panel-head"><h2>3. 確かめて取り込む</h2><span class="spacer"></span>${pill("取り込める 4行", "ok")} ${pill("エラー 1行", "bad")}</div>
+      ${table([{ h: "行", r: true }, { h: "品番" }, { h: "製品名" }, { h: "標準単価", r: true }, { h: "確認" }], [["3", "BR-200", "シート取付ブラケット", "1,200", "○"], ["4", "BR-210", "補強ブラケット", "850", "○"], ["5", "CV-05", "配線カバー", "320", "○"], ["6", "HN-12", "ハーネス固定具", "95", "○"], ["7", "", "（品番なし）", "40", '<span style="color:var(--bad)">品番を入れてください</span>']])}
+      <div class="row" style="margin-top:10px"><button class="btn" data-act="toast" data-msg="見本では取り込みません（本物ではここで台帳に登録されます）">4行を製品台帳に取り込む</button></div></section>`;
+  },
+  home() {
+    const day = state.calDay || today();
+    const open = state.todos.filter(t => !t.done).sort((a, b) => (a.due || "9").localeCompare(b.due || "9"));
+    const now = new Date();
+    const myPunch = state.punches.filter(p => p.user === state.user.id && p.date === today());
+    const lastPunch = myPunch[myPunch.length - 1];
+    return head(`こんにちは、${state.user.name.split(" ")[0]}さん`, "ホーム（最高権限者）") +
+      `<section class="panel home-clock"><span class="home-date">${now.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric", weekday: "short" })}</span><span class="home-time num" id="clock-s">${now.toTimeString().slice(0, 8)}</span></section>
+      <section class="panel"><div class="panel-head"><h2>出勤・退勤</h2><span class="spacer"></span><span class="small muted">出退勤を使う会社だけに出ます</span></div>
+        <div class="row"><button class="btn big" data-act="gps" data-type="出勤">出勤（GPS）</button><button class="btn big secondary" data-act="gps" data-type="退勤">退勤（GPS）</button>
+        <span class="small">${lastPunch ? `今日：${lastPunch.type} ${lastPunch.time}（${lastPunch.method}）` : '<span class="muted">今日はまだ打刻していません。</span>'}</span></div>
+        ${state.gpsMsg ? `<div class="note warn">${state.gpsMsg}</div>` : ""}</section>
+      <div class="home-grid">
+        <section class="panel">${monthCalendar(true)}<p class="small" style="margin-top:6px"><button class="btn-link" data-act="nav" data-view="calendar" data-dept="">大きなカレンダーで見る →</button></p></section>
+        <section class="panel"><h2>${day === today() ? "今日" : mdLabel(day)}の予定</h2>${dayAgenda(day)}</section>
+      </div>
+      <section class="panel"><div class="panel-head"><h2>自分の ToDo</h2><span class="spacer"></span><button class="btn-link small" data-act="nav" data-view="todo" data-dept="">すべて見る・足す</button></div>
+        <div class="list">${open.slice(0, 6).map(todoLine).join("")}</div></section>
+      <section class="panel"><h2>お知らせ</h2><div class="list">
+        ${NEWS.map(([d, t, by]) => `<div class="list-item"><span class="date">${d}</span><span>${esc(t)}</span>${pill(by, "info")}</div>`).join("")}</div></section>`;
+  },
+  oldHome() {
+    const role = state.user.role;
+    const tilesByRole = {
+      admin: [["今月の売上（見込み）", yen(18450000), "前月比 +6%", "up"], ["受注残", yen(7300000), "大和建機 年間契約", ""], ["未入金", yen(5521000), "うち期限超過 1件", "down"], ["承認待ち", pendingApprovals() + "件", "勤怠・休暇", ""]],
+      mkt: [["類似品検索（今月）", "12回", "うち要確認 1件", "down"], ["今月のリード", "65件", "目標 60件", "up"], ["営業へ引き渡し", "2件", "", ""], ["展示会まで", "14日", "名古屋ものづくり展", ""]],
+      sales: [["今月の売上（自分）", man(sum(inPeriod(allSales().filter(s => s.rep === state.user.id), periodStart(new Date(), "month"), "month"))), "売上入力から集計", ""], ["商談の合計", yen(DEALS.filter(d => d.stage < 4).reduce((a, d) => a + d.amt, 0)), "受注前の案件", ""], ["今月の受注", yen(7300000), "目標達成 92%", "up"], ["見積提出中", DEALS.filter(d => d.stage === 2).length + "件", "", ""]],
+      dev: [["進行中の案件", PROJECTS.length + "件", "", ""], ["次のDR", "11/20", "BR-200 DR2", ""], ["RPN 150以上", DFMEA.filter(r => r.s * r.o * r.d >= 150).length + "件", "設計FMEA", "down"]],
+      soumu: [["今日の予約", "6件", "会議室・車両", ""], ["改定した規程", "1件", "就業規則 第18条", ""]],
+      keiri: [["未入金", yen(5521000), "3件", ""], ["期限超過", "1件", "北斗電装", "down"], ["経費 承認待ち", EXPENSES.filter(e => e.status === "申請中").length + "件", "", ""]],
+      jinji: [["社員数", EMPLOYEES.length + "名", "見本は8名のみ表示", ""], ["承認待ち", pendingApprovals() + "件", "勤怠・休暇", ""], ["有休取得率", "68%", "前年 61%", "up"]],
+      kobai: [["登録製品", PRODUCTS.length + "件", "うち試作 " + PRODUCTS.filter(p => p.status === "試作").length + "件", ""], ["仕入先", PARTNERS.filter(p => p.kind === "仕入先").length + "社", "", ""], ["発注待ち", "2件", "中部鋼材", ""]],
+      qa: [["RPN 150以上", PFMEA.filter(r => r.s * r.o * r.d >= 150).length + "件", "工程FMEA", "down"], ["対策中の不具合", DEFECTS.filter(d => d.status !== "完了").length + "件", "", ""], ["次の監査", "11/12", "東和オート様", ""]],
+    };
+    const tiles = tilesByRole[role];
+    const myPunch = state.punches.filter(p => p.user === state.user.id && p.date === today());
+    const lastPunch = myPunch[myPunch.length - 1];
+    return head(`こんにちは、${state.user.name.split(" ")[0]}さん`, `ホーム（${ROLES[role].label}）`) +
+      `<div class="tiles">${tiles.map(([l, v, s, c]) => `<div class="tile"><span class="label">${esc(l)}</span><span class="value">${esc(v)}</span><span class="sub ${c}">${esc(s)}</span></div>`).join("")}</div>
+      <div class="cols">
+        <section class="panel"><div class="panel-head"><h2>今日の勤怠</h2><span class="spacer"></span><button class="btn secondary" data-act="nav" data-view="attendance" data-dept="">打刻する</button></div>
+          <p>${lastPunch ? `${lastPunch.type} ${lastPunch.time}（${lastPunch.method}）` : "<span class='muted'>まだ打刻していません。</span>"}</p></section>
+        <section class="panel"><h2>お知らせ</h2><div class="list">
+          ${NEWS.map(([d, t, by]) => `<div class="list-item"><span class="date">${d}</span><span>${esc(t)}</span>${pill(by, "info")}</div>`).join("")}</div></section>
+      </div>`;
+  },
+
+  attendance() {
+    const mine = state.punches.filter(p => p.user === state.user.id).slice().reverse();
+    const now = new Date();
+    return head("マイページ・勤怠", "共通") + `<p class="small muted">社員番号：<strong>A-001</strong> ／ パスワードはこのページのいちばん下で変えられます。</p>` +
+      `<div class="punch-area">
+        <section class="panel">
+          <span class="muted small">${now.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric", weekday: "short" })}</span>
+          <div class="clock" id="clock">${hhmm(now)}</div>
+          <div class="row">
+            <button class="btn big" data-act="gps" data-type="出勤">出勤（GPS）</button>
+            <button class="btn big secondary" data-act="gps" data-type="退勤">退勤（GPS）</button>
+          </div>
+          <p class="small muted">ボタンを押すと、スマホやパソコンの位置情報で「${OFFICE.name}の近く（${OFFICE.radius}m以内）にいるか」を確かめて記録します。</p>
+          ${state.gpsMsg ? `<div class="note warn">${state.gpsMsg}</div>` : ""}
+          <button class="btn secondary" data-act="toggle-manual">${state.manual ? "手入力を閉じる" : "GPSが使えないときは手入力"}</button>
+        </section>
+        ${state.manual ? `<section class="panel">
+          <h2>手入力で記録する</h2>
+          <p class="small muted">手入力の記録は、人事（または上司）の承認が必要です。</p>
+          <div class="row">
+            <div class="field"><label for="m-type">種類</label><select id="m-type"><option>出勤</option><option>退勤</option></select></div>
+            <div class="field"><label for="m-date">日付</label><input id="m-date" type="date" value="${today()}"></div>
+            <div class="field"><label for="m-time">時刻</label><input id="m-time" type="time" value="${hhmm(now)}"></div>
+          </div>
+          <div class="field"><label for="m-reason">理由</label>
+            <select id="m-reason"><option>テレワーク</option><option>直行・直帰（お客様先）</option><option>スマホの位置情報が使えない</option><option>打刻を忘れた</option></select></div>
+          <button class="btn" data-act="manual-save">手入力で記録する</button>
+        </section>` : ""}
+      </div>
+      <section class="panel"><h2>自分の打刻記録</h2>
+        ${mine.length ? table([{ h: "日付" }, { h: "種類" }, { h: "時刻" }, { h: "方法" }, { h: "場所・理由" }, { h: "状態" }],
+          mine.map(p => [p.date, p.type, `<span class="num">${p.time}</span>`, p.method, esc(p.where), statusPill(p.status)]))
+          : `<p class="muted">まだ記録がありません。上のボタンで打刻してみてください。</p>`}
+      </section>
+      <section class="panel" style="max-width:520px"><h2>パスワード</h2>
+        <div class="row"><div class="field" style="flex:1 1 200px"><label for="pw-new">新しいパスワード（10文字以上）</label><input id="pw-new" type="password"></div>
+        <div class="field" style="flex:1 1 200px"><label for="pw-new2">もう一度</label><input id="pw-new2" type="password"></div></div>
+        <button class="btn" data-act="toast" data-msg="見本ではパスワードは変わりません">パスワードを変える</button></section>`;
+  },
+
+  rules() {
+    const q = state.ruleQuery.trim();
+    const hl = t => q ? esc(t).split(esc(q)).join(`<mark>${esc(q)}</mark>`) : esc(t);
+    const chapters = RULES.map((c, i) => ({ ...c, i, arts: c.arts.filter(([h, b]) => !q || h.includes(q) || b.includes(q)) })).filter(c => c.arts.length);
+    return head("就業規則・社内規程", "共通", `<span class="sample-flag">見本の条文です</span>`) +
+      `<div class="field" style="max-width:420px"><label for="rule-q">キーワードでさがす（例：有給、テレワーク、休憩）</label>
+        <input id="rule-q" type="search" value="${esc(q)}" placeholder="ことばを入力"></div>
+      <div class="rules">
+        <div class="toc">${RULES.map((c, i) => `<a class="nav-btn" href="#ch${i}" style="color:inherit;text-decoration:none"><span class="dot"></span>${esc(c.ch)}</a>`).join("")}
+          <div class="side-label" style="margin-top:10px">ほかの規程</div>
+          ${DOCS.filter(d => d.name !== "就業規則").map(d => `<span class="nav-btn muted small" style="cursor:default">${esc(d.name)}（${esc(d.ver)}）</span>`).join("")}
+        </div>
+        <section class="panel">
+          <p class="small muted">就業規則 第7版（2026年10月1日改定）</p>
+          ${chapters.length ? chapters.map(c => `<div id="ch${c.i}"><h2 style="margin-top:6px">${esc(c.ch)}</h2>
+            ${c.arts.map(([h, b]) => `<div class="article"><h3>${hl(h)}</h3><p>${hl(b)}</p></div>`).join("")}</div>`).join("")
+            : `<p class="muted">「${esc(q)}」を含む条文はありません。</p>`}
+        </section>
+      </div>`;
+  },
+
+  users() {
+    return head("ユーザーと権限", "経営") +
+      `<section class="panel"><p class="small muted">だれが、どの部署の画面を見られるかを決めます。試作版では見るだけです。</p>
+      ${table([{ h: "名前" }, { h: "役割" }, { h: "役職" }, { h: "見られる画面" }],
+        USERS.map(u => [esc(u.name), pill(ROLES[u.role].label, u.role === "admin" ? "ok" : "info"), esc(u.title), u.role === "admin" ? "全部門" : `共通 ＋ ${ROLES[u.role].label}`]))}
+      </section>`;
+  },
+
+  similar() {
+    const results = state.simShown === "keyword" ? SIM_KEYWORD : state.simShown === "photo" ? SIM_PHOTO : null;
+    const order = ["full", "partial", "similar", "image", "web"];
+    return head("類似品検索", "マーケティング", `<span class="sample-flag">イメージ図</span>`) +
+      `<div class="api-note">
+        <strong>この画面はイメージ図です。実際に使うには、次の2種類の外部APIの契約が必要です。</strong>
+        <div class="api-list">
+          <div class="api-item"><b>① キーワード検索API</b><br><span class="small muted">例：Brave Search API。検索語でWebページと画像をさがす</span></div>
+          <div class="api-item"><b>② 画像検索API</b><br><span class="small muted">例：Google Cloud Vision API（Web検出）。写真と同じ・似た画像をさがす</span></div>
+        </div>
+        <span class="small muted">外部に送るのは検索語と写真だけ。商品の説明は社内で動くAIだけが読みます。</span>
+      </div>
+      <section class="panel">
+        <div class="tabs" role="tablist" aria-label="検索の方法">
+          <button class="btn ${state.simTab === "keyword" ? "" : "secondary"}" role="tab" aria-selected="${state.simTab === "keyword"}" data-act="sim-tab" data-tab="keyword">キーワードでさがす</button>
+          <button class="btn ${state.simTab === "photo" ? "" : "secondary"}" role="tab" aria-selected="${state.simTab === "photo"}" data-act="sim-tab" data-tab="photo">写真でさがす</button>
+        </div>
+        <div class="field"><label for="sim-note">自社の商品の説明（社内AIだけが読み、外部には送りません）</label>
+          <textarea id="sim-note" rows="2" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px">${esc(state.simNote)}</textarea></div>
+        ${state.simTab === "keyword" ? `
+          <div class="row" style="align-items:center"><span class="small muted">社内AIの検索語の候補：</span>
+            ${["シート ブラケット 板金", "取付ブラケット 亜鉛めっき 2.3mm", "シートレール 補強プレート"].map(k => `<span class="pill info">${esc(k)}</span>`).join("")}</div>
+          <div class="row" style="align-items:end">
+            <div class="field" style="flex:1 1 260px"><label for="sim-q">検索語（外部の検索APIに送ります）</label><input id="sim-q" value="${esc(state.simQuery)}"></div>
+            <button class="btn" data-act="sim-run" data-kind="keyword">さがす</button>
+          </div>` : `
+          <div class="row" style="align-items:end">
+            <div class="field"><label for="sim-file">商品の写真（外部の画像検索APIに送ります）</label><input id="sim-file" type="file" accept="image/*"></div>
+            ${state.simPhoto ? `<img class="photo-preview" src="${state.simPhoto}" alt="選んだ写真">` : ""}
+            <button class="btn" data-act="sim-run" data-kind="photo">似た商品をさがす</button>
+          </div>`}
+      </section>
+      ${results ? `
+        <section class="panel">
+          <div class="panel-head"><h2>見つかったもの（見本）</h2><span class="spacer"></span><span class="small muted">${results.length}件</span></div>
+          ${state.simShown === "photo" ? `<p class="small">写真から推測された言葉：${SIM_LABELS.map(l => pill(l, "info")).join(" ")}</p>` : ""}
+          ${results.some(r => r.match === "full") ? `<div class="note warn small">同じ写真が使われているページがあります。自社の写真の無断使用や、同じ商品の販売がないか確認してください。</div>` : ""}
+          <div class="result-grid">
+            ${results.slice().sort((a, b) => order.indexOf(a.match) - order.indexOf(b.match)).map(r => `
+              <div class="result-card">${partSvg(r.shape)}<span class="t">${esc(r.title)}</span>
+                <span class="small muted">${esc(r.site)}</span>${r.snippet ? `<span class="small">${esc(r.snippet)}</span>` : ""}
+                ${pill(MATCH[r.match][0], MATCH[r.match][1])}</div>`).join("")}
+          </div>
+        </section>
+        <section class="ai-out">
+          <span class="ai-tag">社内AIの見立て（参考・見本）</span>
+          <ul style="margin:0;padding-left:1.2em;display:grid;gap:6px">
+            ${state.simShown === "photo"
+              ? `<li>1件目は自社の製品写真と同じ画像です。無断転載の可能性があるため、掲載元への確認をおすすめします。</li>
+                 <li>3〜5件目は形が似ていますが、穴の数や曲げの形がちがうため、別の製品と考えられます。</li>`
+              : `<li>1件目「シートレール用 取付ブラケット」は、板厚・穴数・表面処理が近く、競合品になりそうです。</li>
+                 <li>違いを出せそうな点：曲げRの設計（割れにくさ）、小ロット対応、溶接条件の記録による品質の見える化。</li>`}
+            <li>最終的な判断は人が行ってください。</li>
+          </ul>
+        </section>` : `<p class="muted small">検索すると、ここに見本の結果が出ます（イメージ図のため、実際の検索はしません）。</p>`}`;
+  },
+
+  campaigns() {
+    return head("キャンペーン", "マーケティング") + `<section class="panel">${table(
+      [{ h: "名前" }, { h: "手段" }, { h: "期間" }, { h: "予算", r: 1 }, { h: "獲得リード", r: 1 }, { h: "状態" }],
+      CAMPAIGNS.map(c => [esc(c.name), esc(c.ch), esc(c.period), yen(c.budget), c.leads, statusPill(c.status)]))}</section>`;
+  },
+  leads() {
+    return head("見込み客（リード）", "マーケティング") + `<section class="panel"><p class="small muted">スコアが高いほど、買ってくれそうな見込み客です（資料DL・メール開封などで加点）。</p>${table(
+      [{ h: "会社" }, { h: "担当者" }, { h: "きっかけ" }, { h: "スコア", r: 1 }, { h: "状態" }],
+      LEADS.map(l => [esc(l.co), esc(l.person), esc(l.src), l.score, statusPill(l.status)]))}</section>`;
+  },
+
+  deals() {
+    return head("商談", "営業") + `<p class="small muted">「次の段階へ」を押すと、商談が右の列へ進みます。</p>
+      <div class="kanban">${STAGES.map((s, i) => {
+        const ds = DEALS.filter(d => d.stage === i);
+        return `<div class="lane"><h3><span>${s}</span><span class="num muted">${ds.length}</span></h3>
+          ${ds.map(d => `<div class="deal"><strong>${esc(d.co)}</strong><span class="muted">${esc(d.item)}</span><span class="amt">${yen(d.amt)}</span>
+            ${i < 4 ? `<button data-act="advance" data-id="${d.id}">次の段階へ →</button>` : pill("受注", "ok")}</div>`).join("")}</div>`;
+      }).join("")}</div>`;
+  },
+  accounts() {
+    return head("取引先", "営業") + `<section class="panel">${table(
+      [{ h: "会社" }, { h: "業種" }, { h: "取引開始", r: 1 }, { h: "昨年度の売上", r: 1 }],
+      ACCOUNTS.map(a => [esc(a.co), esc(a.ind), a.since, yen(a.sales)]))}</section>`;
+  },
+
+  "sales-entry"() {
+    const me = state.user.role === "sales" ? state.user.id : "u3"; // 最高権限者は見本として鈴木さんの画面を見る
+    const customers = PARTNERS.filter(p => p.kind !== "仕入先");
+    const sf = state.sf || (state.sf = { date: ymd(new Date()), product: PRODUCTS[0].id, customer: customers[0].id, qty: 1, price: PRODUCTS[0].price, note: "" });
+    const mine = allSales().filter(s => s.rep === me);
+    const nowD = new Date();
+    const t = u => sum(inPeriod(mine, periodStart(nowD, u), u));
+    const recent = mine.slice().sort((a, b) => (b.date + b.id).localeCompare(a.date + a.id)).slice(0, 8);
+    return head("売上入力", "営業", `<span class="small muted">${esc(nameOf(SALES_REPS, me))}さんの売上</span>`) +
+      `<div class="tiles">${[["今日", "day"], ["今週", "week"], ["今月", "month"], ["今四半期", "quarter"], ["今年度", "year"]].map(([l, u]) =>
+        `<div class="tile"><span class="label">${l}</span><span class="value">${man(t(u))}</span></div>`).join("")}</div>
+      <section class="panel">
+        <div class="panel-head"><h2>売った製品を入力する</h2></div>
+        <p class="small muted">製品は「製品台帳」（開発・購買が登録）から、売った先は「取引先台帳」から選びます。台帳にないものは、購買または開発に登録を頼んでください。</p>
+        <div class="row" style="align-items:end">
+          <div class="field"><label for="sf-date">売った日</label><input type="date" id="sf-date" value="${sf.date}"></div>
+          <div class="field" style="flex:1 1 220px"><label for="sf-product">製品</label><select id="sf-product">
+            ${PRODUCTS.map(p => `<option value="${p.id}" ${p.id === sf.product ? "selected" : ""}>${esc(p.code)} ${esc(p.name)}（${p.status}）</option>`).join("")}</select></div>
+          <div class="field" style="flex:1 1 220px"><label for="sf-customer">売った先</label><select id="sf-customer">
+            ${customers.map(c => `<option value="${c.id}" ${c.id === sf.customer ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
+        </div>
+        <div class="row" style="align-items:end">
+          <div class="field"><label for="sf-qty">数量（${esc(PRODUCTS.find(p => p.id === sf.product).unit)}）</label><input type="number" id="sf-qty" min="1" step="1" value="${sf.qty}" style="width:110px"></div>
+          <div class="field"><label for="sf-price">単価（円）</label><input type="number" id="sf-price" min="0" step="1" value="${sf.price}" style="width:130px"></div>
+          <div class="field"><label>金額</label><span class="num" id="sf-amount" style="font-size:1.2rem;padding:4px 0">${yen(sf.qty * sf.price)}</span></div>
+          <div class="field" style="flex:1 1 200px"><label for="sf-note">メモ（任意）</label><input id="sf-note" value="${esc(sf.note)}" placeholder="例：追加注文、初回取引"></div>
+          <button class="btn" data-act="sales-save">登録する</button>
+        </div>
+      </section>
+      <section class="panel"><div class="panel-head"><h2>最近の入力</h2><span class="spacer"></span><button class="btn secondary" data-act="nav" data-view="sales-compare" data-dept="${state.viewDept || ""}">期間ごとに比べる →</button></div>
+        ${table([{ h: "日付" }, { h: "製品" }, { h: "売った先" }, { h: "数量", r: 1 }, { h: "単価", r: 1 }, { h: "金額", r: 1 }, { h: "" }],
+          recent.map(s => { const p = PRODUCTS.find(x => x.id === s.product);
+            return [`<span class="num">${s.date}</span>`, `${esc(p.code)} ${esc(p.name)}`, esc(nameOf(PARTNERS, s.customer)), s.qty.toLocaleString("ja-JP"), yen(s.price), yen(amountOf(s)),
+              s.mine ? `<button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="sales-del" data-id="${s.id}">取り消す</button>` : ""]; }))}
+      </section>`;
+  },
+  "sales-compare"() {
+    const unit = state.salesUnit, nowD = new Date();
+    const rows = allSales().filter(s => state.salesWho === "all" || s.rep === state.salesWho);
+    const cur = periodStart(nowD, unit), prev = shiftPeriod(cur, unit, -1);
+    const lastYear = unit === "year" ? null : periodStart(shiftPeriod(cur, "year", -1), unit);
+    // 今期は「途中」なので、前期・前年同期も同じ日数までで比べる
+    const elapsed = Math.round((parseYmd(ymd(nowD)) - cur) / 86400000) + 1;
+    const upTo = (start) => { const end = new Date(start); end.setDate(end.getDate() + elapsed); return rows.filter(s => s.date >= ymd(start) && s.date < ymd(end) && s.date < ymd(shiftPeriod(start, unit, 1))); };
+    const vCur = sum(inPeriod(rows, cur, unit)), vPrevSame = sum(upTo(prev)), vPrevAll = sum(inPeriod(rows, prev, unit));
+    const vLySame = lastYear ? sum(upTo(lastYear)) : 0;
+    const n = BAR_COUNT[unit], bars = [];
+    for (let i = n - 1; i >= 0; i--) { const st = shiftPeriod(cur, unit, -i); bars.push({ st, v: sum(inPeriod(rows, st, unit)), now: i === 0 }); }
+    const max = Math.max(...bars.map(b => b.v), 1);
+    const step = niceStep(max / 3), top = step * Math.ceil(max / step);
+    const ticks = [0, 1, 2, 3].map(k => k * step).filter(v => v <= top);
+    const group = (key, list) => {
+      const ids = [...new Set(rows.map(s => s[key]))];
+      const out = ids.map(id => ({ id, name: nameOf(list, id), now: sum(inPeriod(rows.filter(s => s[key] === id), cur, unit)), before: sum(inPeriod(rows.filter(s => s[key] === id), prev, unit)) }))
+        .filter(g => g.now || g.before).sort((a, b) => b.now - a.now);
+      const m = Math.max(...out.map(g => g.now), 1);
+      return table([{ h: key === "rep" ? "担当者" : key === "product" ? "製品" : "売った先" }, { h: "今期（途中）", r: 1 }, { h: "" }, { h: "前期（全体）", r: 1 }],
+        out.map(g => [esc(g.name), man(g.now), `<div class="meter" aria-hidden="true"><i style="width:${Math.round(g.now / m * 100)}%"></i></div>`, man(g.before)]));
+    };
+    const productsAsList = PRODUCTS.map(p => ({ id: p.id, name: `${p.code} ${p.name}` }));
+    return head("売上の比較", "営業") +
+      `<div class="row" style="justify-content:space-between">
+        <div class="tabs" role="tablist" aria-label="比べる期間">${Object.entries(UNITS).map(([u, l]) =>
+          `<button class="btn ${u === unit ? "" : "secondary"}" role="tab" aria-selected="${u === unit}" data-act="sales-unit" data-unit="${u}">${l}</button>`).join("")}</div>
+        <div class="field" style="grid-auto-flow:column;align-items:center;gap:8px"><label for="sales-who">担当者</label><select id="sales-who">
+          <option value="all">全員</option>${SALES_REPS.map(r => `<option value="${r.id}" ${r.id === state.salesWho ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select></div>
+      </div>
+      <div class="tiles">
+        <div class="tile"><span class="label">今期：${periodLabel(cur, unit)}（途中）</span><span class="value">${man(vCur)}</span><span class="sub">${elapsed}日目まで</span></div>
+        <div class="tile"><span class="label">前期の同じ日数まで</span><span class="value">${man(vPrevSame)}</span><span class="sub">今期は ${deltaText(vCur, vPrevSame)}</span></div>
+        ${lastYear ? `<div class="tile"><span class="label">前年の同じ期間（同じ日数まで）</span><span class="value">${man(vLySame)}</span><span class="sub">今期は ${deltaText(vCur, vLySame)}</span></div>` : ""}
+        <div class="tile"><span class="label">前期の合計：${periodLabel(prev, unit)}</span><span class="value">${man(vPrevAll)}</span><span class="sub muted">確定した数字</span></div>
+      </div>
+      <section class="panel">
+        <div class="panel-head"><h2>${UNITS[unit]}ごとの売上（直近${n}${{ day: "日", week: "週", month: "か月", quarter: "期", year: "年度" }[unit]}）</h2><span class="spacer"></span><span class="small muted">いちばん右の薄い棒は途中の数字です</span></div>
+        <div class="bars" role="img" aria-label="${UNITS[unit]}ごとの売上の棒グラフ">
+          <div class="bars-axis">${ticks.map(v => `<span style="bottom:${v / top * 100}%">${man(v).replace("万円", "万")}</span>`).join("")}</div>
+          <div class="bars-plot">${ticks.slice(1).map(v => `<div class="bars-grid" style="bottom:${v / top * 100}%"></div>`).join("")}
+            ${bars.map(b => `<div class="bar ${b.now ? "now" : ""}" tabindex="0"><i style="height:${b.v / top * 100}%"></i><span class="tip">${periodLabel(b.st, unit)}${b.now ? "（途中）" : ""}：${yen(b.v)}</span></div>`).join("")}</div>
+          <div class="bars-x">${bars.map((b, i) => `<span>${unit === "day" || n <= 12 || i % 2 === 0 ? periodLabel(b.st, unit, true) : ""}</span>`).join("")}</div>
+        </div>
+        <details><summary class="small">表で見る</summary>${table([{ h: "期間" }, { h: "売上", r: 1 }], bars.slice().reverse().map(b => [periodLabel(b.st, unit) + (b.now ? "（途中）" : ""), yen(b.v)]))}</details>
+      </section>
+      <div class="cols" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))">
+        ${state.salesWho === "all" ? `<section class="panel"><h2>担当者別</h2>${group("rep", SALES_REPS)}</section>` : ""}
+        <section class="panel"><h2>製品別</h2>${group("product", productsAsList)}</section>
+        <section class="panel"><h2>売った先別</h2>${group("customer", PARTNERS)}</section>
+      </div>`;
+  },
+  products() {
+    const fy = periodStart(new Date(), "year"), rows = inPeriod(allSales(), fy, "year");
+    return head("製品台帳", "購買・開発") + `<section class="panel">
+      <p class="small muted">ここに登録した製品が、営業の「売上入力」のプルダウンに出ます。開発は新しい製品と開発案件を、購買は仕入先と標準単価を登録します。</p>
+      ${table([{ h: "品番" }, { h: "製品名" }, { h: "状態" }, { h: "標準単価", r: 1 }, { h: "仕入先（購買）" }, { h: "開発案件" }, { h: "今年度の売上", r: 1 }],
+        PRODUCTS.map(p => [`<span class="num">${esc(p.code)}</span>`, esc(p.name), pill(p.status, p.status === "量産" ? "ok" : "warn"), yen(p.price) + " / " + p.unit,
+          p.supplier ? esc(nameOf(PARTNERS, p.supplier)) : `<span class="muted">社内</span>`, p.dev ? esc(p.dev) : `<span class="muted">—</span>`, man(sum(rows.filter(s => s.product === p.id)))]))}</section>`;
+  },
+  partners() {
+    const fy = periodStart(new Date(), "year"), rows = inPeriod(allSales(), fy, "year");
+    return head("取引先台帳", "購買・営業") + `<section class="panel">
+      <p class="small muted">得意先（売る先）と仕入先（買う先）を1つの台帳で管理します。営業の「売った先」はここから選びます。</p>
+      ${table([{ h: "会社" }, { h: "種類" }, { h: "業種" }, { h: "今年度の売上", r: 1 }, { h: "この会社から買っている製品" }],
+        PARTNERS.map(c => [esc(c.name), pill(c.kind, c.kind === "得意先" ? "ok" : "info"), esc(c.ind),
+          c.kind === "仕入先" ? `<span class="muted">—</span>` : man(sum(rows.filter(s => s.customer === c.id))),
+          c.kind === "仕入先" ? PRODUCTS.filter(p => p.supplier === c.id).map(p => esc(p.code)).join("、") : `<span class="muted">—</span>`]))}</section>`;
+  },
+
+  projects() {
+    return head("開発案件", "開発") + `<section class="panel">${table(
+      [{ h: "案件" }, { h: "段階" }, { h: "期限" }, { h: "進み具合", r: 1 }, { h: "状態" }],
+      PROJECTS.map(p => [esc(p.name), esc(p.phase), `<span class="num">${p.due}</span>`, p.progress + "%", statusPill(p.status)]))}</section>`;
+  },
+  dfmea() {
+    return head("設計FMEA（DFMEA）", "開発 ・ BR-200 取付ブラケット") + fmeaNote() + `<section class="panel">${table(
+      [{ h: "部位" }, { h: "働き" }, { h: "故障モード" }, { h: "影響" }, { h: "原因" }, { h: "S", r: 1 }, { h: "O", r: 1 }, { h: "D", r: 1 }, { h: "RPN" }],
+      DFMEA.map(r => [esc(r.item), esc(r.func), esc(r.mode), esc(r.effect), esc(r.cause), r.s, r.o, r.d, rpnPill(r.s * r.o * r.d)]))}</section>`;
+  },
+
+  patent() {
+    return head("特許調査", "開発", `<span class="sample-flag">イメージ図</span>`) +
+      `<div class="api-note">
+        <strong>この画面はイメージ図です。実際に使うには、外部の特許検索API（例：特許庁の特許情報取得API、商用の特許データベース）の契約が必要です。</strong>
+        <span class="small muted">外部に送るのは検索語や分類だけ。図面や設計の資料は社内で動くAIだけが読みます。</span>
+      </div>
+      <section class="panel">
+        <div class="field"><label for="pt-note">調べたいこと（社内AIだけが読み、外部には送りません）</label>
+          <textarea id="pt-note" rows="2" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px">BR-200 の曲げ部の割れ対策として、曲げRを大きくし、補強リブを付ける設計変更を考えている。</textarea></div>
+        <div class="row" style="align-items:center"><span class="small muted">社内AIの検索語の候補：</span>
+          ${["シート 取付ブラケット 補強リブ", "板金 曲げ 割れ防止", "曲げ半径 板厚"].map(k => pill(k, "info")).join(" ")}</div>
+        <div class="row" style="align-items:end">
+          <div class="field" style="flex:1 1 260px"><label for="pt-q">検索語（外部の特許検索APIに送ります）</label><input id="pt-q" value="シート 取付ブラケット 曲げ 補強リブ"></div>
+          <div class="field"><label for="pt-range">期間</label><select id="pt-range"><option>過去20年</option><option>過去10年</option></select></div>
+          <button class="btn" data-act="patent-run">さがす</button>
+        </div>
+      </section>
+      ${state.patentShown ? `
+        <section class="panel">
+          <div class="panel-head"><h2>見つかった特許（見本）</h2><span class="spacer"></span><span class="small muted">${PATENTS.length}件</span></div>
+          ${table([{ h: "番号" }, { h: "名称" }, { h: "出願人" }, { h: "年", r: 1 }, { h: "状態" }, { h: "注意度" }, { h: "社内AIのメモ" }],
+            PATENTS.map(p => [`<span class="num">${esc(p.no)}</span>`, esc(p.title), esc(p.applicant), p.year, statusPillPatent(p.status), pill(p.risk, RISK_CLASS[p.risk]), `<span class="small">${esc(p.point)}</span>`]))}
+        </section>
+        <section class="ai-out">
+          <span class="ai-tag">社内AIの見立て（参考・見本）</span>
+          <ul style="margin:0;padding-left:1.2em;display:grid;gap:6px">
+            <li>「板金部品の曲げ割れ防止方法」（登録済み）は、考えている設計変更と重なる可能性があります。</li>
+            <li>曲げRの数値の決め方を変える、またはリブの位置を変えることで、重なりを避けられるか検討しましょう。</li>
+            <li>出願の要否や権利の判断は、必ず弁理士に相談してください。</li>
+          </ul>
+        </section>` : `<p class="muted small">検索すると、ここに見本の結果が出ます（イメージ図のため、実際の検索はしません）。</p>`}`;
+  },
+
+  facilities() {
+    const times = ["9:00", "10:00", "13:00", "15:00"];
+    return head("設備・会議室予約", "総務", `<span class="muted small">${today()}</span>`) + `<section class="panel"><p class="small muted">空いている枠を押すと、あなたの名前で予約されます。</p>${table(
+      [{ h: "設備" }, ...times.map(t => ({ h: t }))],
+      FACILITIES.map((f, fi) => [esc(f.name), ...times.map(t => f.slots[t] ? `<span class="small">${esc(f.slots[t])}</span>` : `<button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="book" data-f="${fi}" data-t="${t}">空き</button>`)]))}</section>`;
+  },
+  documents() {
+    return head("社内文書", "総務") + `<section class="panel">${table(
+      [{ h: "文書" }, { h: "版" }, { h: "最終改定" }, { h: "担当" }],
+      DOCS.map(d => [esc(d.name), esc(d.ver), `<span class="num">${d.updated}</span>`, esc(d.owner)]))}
+      <p class="small muted">本番では、ここで規程を書き換えると、全員の「就業規則・社内規程」画面に反映されます。</p></section>`;
+  },
+
+  invoices() {
+    return head("請求書", "経理") + `<section class="panel">${table(
+      [{ h: "番号" }, { h: "請求先" }, { h: "金額", r: 1 }, { h: "支払期限" }, { h: "状態" }, { h: "" }],
+      INVOICES.map((v, i) => [`<span class="num">${v.no}</span>`, esc(v.to), yen(v.amt), `<span class="num">${v.due}</span>`, statusPill(v.status),
+        v.status !== "入金済" ? `<button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="paid" data-i="${i}">入金を確認</button>` : ""]))}</section>`;
+  },
+  expenses() {
+    return head("経費精算", "経理") + `<section class="panel">${table(
+      [{ h: "申請者" }, { h: "内容" }, { h: "金額", r: 1 }, { h: "状態" }, { h: "" }],
+      EXPENSES.map(e => [esc(e.who), esc(e.what), yen(e.amt), statusPill(e.status),
+        e.status === "申請中" ? `<button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="exp-ok" data-id="${e.id}">承認</button>` : ""]))}</section>`;
+  },
+
+  employees() {
+    return head("社員名簿", "人事") + `<section class="panel">${table(
+      [{ h: "名前" }, { h: "部署" }, { h: "役職" }, { h: "入社" }],
+      EMPLOYEES.map(([n, d, t, s]) => [esc(n), esc(d), esc(t || "—"), `<span class="num">${s}</span>`]))}</section>`;
+  },
+  approvals() {
+    const manual = state.punches.filter(p => p.method === "手入力");
+    const nameOf = id => (USERS.find(u => u.id === id) || {}).name || "";
+    return head("勤怠・休暇の承認", "人事") +
+      `<section class="panel"><h2>手入力の打刻</h2>
+        ${manual.length ? table([{ h: "社員" }, { h: "日付" }, { h: "種類" }, { h: "時刻" }, { h: "理由" }, { h: "状態" }, { h: "" }],
+          manual.map(p => [esc(nameOf(p.user)), p.date, p.type, `<span class="num">${p.time}</span>`, esc(p.where), statusPill(p.status),
+            p.status === "要承認" ? `<button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="punch-ok" data-pid="${p.pid}">承認</button>` : ""]))
+          : `<p class="muted">手入力の打刻はまだありません。「勤怠」画面で手入力すると、ここに届きます。</p>`}
+      </section>
+      <section class="panel"><h2>休暇の申請</h2>
+        ${table([{ h: "社員" }, { h: "種類" }, { h: "日付" }, { h: "状態" }, { h: "" }],
+          LEAVES.map(l => [esc(l.who), esc(l.kind), `<span class="num">${l.date}</span>`, statusPill(l.status),
+            l.status === "申請中" ? `<button class="btn secondary" style="padding:2px 10px;font-size:.8rem" data-act="leave-ok" data-id="${l.id}">承認</button>` : ""]))}
+      </section>`;
+  },
+
+  fmea() {
+    const rows = PFMEA.map(r => ({ ...r, rpn: r.s * r.o * r.d }));
+    return head("工程FMEA（PFMEA）", "品質保証 ・ BR-200 取付ブラケット") + fmeaNote() + `<section class="panel">${table(
+      [{ h: "工程" }, { h: "故障モード" }, { h: "影響" }, { h: "原因" }, { h: "S", r: 1 }, { h: "O", r: 1 }, { h: "D", r: 1 }, { h: "RPN" }, { h: "今の管理方法" }],
+      rows.map(r => [esc(r.proc), esc(r.mode), esc(r.effect), esc(r.cause), r.s, r.o, r.d, rpnPill(r.rpn), esc(r.ctrl)]))}</section>`;
+  },
+
+  "ai-dr"() {
+    return head("AI：デザインレビュー資料", "品質保証 ・ the seed の中心機能") +
+      `<section class="panel"><p>工程FMEAと設計FMEAから、危険度（RPN）の高い順に「DRで話し合うべきこと」をまとめた資料を作ります。</p>
+        <div class="row">
+          <div class="field"><label for="dr-th">取り上げる基準（RPNがこれ以上）</label>
+            <select id="dr-th"><option value="80">80以上</option><option value="120" selected>120以上</option><option value="150">150以上</option></select></div>
+          <div class="field"><label for="dr-name">会議名</label><input id="dr-name" value="BR-200 DR2（詳細設計審査）"></div>
+          <button class="btn" data-act="make-dr" style="align-self:end">資料を作る</button>
+        </div>
+        <p class="small muted">試作版では、決まったルールで資料を組み立てています（本物のAIはまだつないでいません）。</p>
+      </section>${state.dr || ""}`;
+  },
+
+  "ai-sop"() {
+    return head("AI：検査作業手順書", "品質保証 ・ the seed の中心機能") +
+      `<section class="panel"><p>工程FMEAの「推奨処置」を読み取り、現場で使う検査の作業手順書の下書きを作ります。</p>
+        <div class="row">
+          <div class="field"><label for="sop-proc">工程</label><select id="sop-proc">${PFMEA.map((r, i) => `<option value="${i}" ${r.proc === "穴あけ" ? "selected" : ""}>${esc(r.proc)}</option>`).join("")}</select></div>
+          <button class="btn" data-act="make-sop" style="align-self:end">手順書を作る</button>
+        </div>
+        <p class="small muted">試作版では、決まったひな形に当てはめています（本物のAIはまだつないでいません）。</p>
+      </section>${state.sop || ""}`;
+  },
+
+  defects() {
+    return head("不具合報告", "品質保証") + `<section class="panel">${table(
+      [{ h: "日付" }, { h: "品番" }, { h: "内容" }, { h: "見つけた場所" }, { h: "状態" }],
+      DEFECTS.map(d => [`<span class="num">${d.date}</span>`, esc(d.part), esc(d.desc), esc(d.where), statusPill(d.status)]))}</section>`;
+  },
+};
+
+// 見本の部品の絵（外部の画像は使えないため、簡単な図で代わりにする）
+function niceStep(raw) { // 目盛りをきりのいい数字にする
+  const p = 10 ** Math.floor(Math.log10(raw || 1)), f = raw / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+}
+function partSvg(n) {
+  const shapes = [
+    `<path d="M30 30 H130 V60 H95 V100 H65 V60 H30 Z" /><circle cx="45" cy="45" r="6" class="h"/><circle cx="115" cy="45" r="6" class="h"/><circle cx="80" cy="85" r="5" class="h"/>`,
+    `<path d="M40 25 H60 V85 H130 V105 H40 Z" /><circle cx="50" cy="45" r="5" class="h"/><circle cx="110" cy="95" r="5" class="h"/>`,
+    `<rect x="25" y="40" width="110" height="45" rx="6"/><circle cx="40" cy="62" r="6" class="h"/><circle cx="120" cy="62" r="6" class="h"/><rect x="65" y="52" width="30" height="20" rx="3" class="h"/>`,
+    `<path d="M30 40 L80 25 L130 40 V90 L80 105 L30 90 Z"/><circle cx="80" cy="65" r="10" class="h"/>`,
+    `<rect x="30" y="30" width="100" height="70" rx="4" fill="none" stroke-width="3"/><path d="M45 85 L70 55 L90 75 L115 45" fill="none" stroke-width="3"/>`,
+  ];
+  const tones = ["#8a9aa5", "#a0896b", "#7f9a86", "#9a8fa8", "#8f9f9f"];
+  return `<svg viewBox="0 0 160 120" aria-hidden="true"><g fill="${tones[n % tones.length]}" stroke="${tones[n % tones.length]}">${shapes[n % shapes.length]}</g><style>.h{fill:var(--surface-2);stroke:none}</style></svg>`;
+}
+
+function statusPillPatent(s) {
+  return pill(s, s === "登録" ? "bad" : s === "審査中" ? "warn" : "info");
+}
+
+function fmeaNote() {
+  return `<div class="note small">S＝影響の重さ、O＝起こりやすさ、D＝見つけにくさ（どれも1〜10）。RPN＝S×O×D。数字が大きいほど先に対策します。</div>`;
+}
+
+function renderView() {
+  const fn = VIEWS[state.view] || VIEWS.home;
+  return fn();
+}
+
+// ---------- 6. AIの見本出力 ----------
+function makeDR(threshold, name) {
+  const items = [
+    ...DFMEA.map(r => ({ kind: "設計", where: r.item, mode: r.mode, effect: r.effect, rpn: r.s * r.o * r.d, s: r.s, action: r.action })),
+    ...PFMEA.map(r => ({ kind: "工程", where: r.proc, mode: r.mode, effect: r.effect, rpn: r.s * r.o * r.d, s: r.s, action: r.action })),
+  ].filter(x => x.rpn >= threshold || x.s >= 9).sort((a, b) => b.rpn - a.rpn);
+  const max = Math.max(...items.map(i => i.rpn), 1);
+  return `<section class="ai-out">
+    <span class="ai-tag">the seed が作った下書き</span>
+    <h2>${esc(name)} 審議資料</h2>
+    <p class="small muted">${today()} 作成 ／ 対象：BR-200 取付ブラケット ／ 基準：RPN ${threshold}以上、または影響の重さ9以上</p>
+    <h3>1. 結論（先に読むところ）</h3>
+    <p>重点審議は <strong>${items.length}件</strong> です。最も危険度が高いのは「${esc(items[0] ? items[0].where + "の" + items[0].mode : "なし")}」です。
+       影響の重さが9以上の項目（強度・脱落に関わるもの）は、RPNが低くても必ず審議します。</p>
+    <h3>2. 審議する項目</h3>
+    ${table([{ h: "順位", r: 1 }, { h: "区分" }, { h: "場所" }, { h: "故障モード" }, { h: "起きると" }, { h: "RPN" }, { h: "" }, { h: "DRで決めること" }],
+      items.map((x, i) => [i + 1, pill(x.kind, "info"), esc(x.where), esc(x.mode), esc(x.effect), rpnPill(x.rpn),
+        `<div class="rpn-bar"><span style="width:${Math.round(x.rpn / max * 100)}%;background:${x.rpn >= 150 ? "var(--bad)" : "var(--warn)"}"></span></div>`,
+        esc(x.action) + "でよいか。担当と期限を決める。"]))}
+    <h3>3. 宿題の書き方</h3>
+    <p class="small">各項目について「だれが・いつまでに・何をして・どう確かめるか」を決め、対策後にS・O・Dを付け直して、RPNが下がったことを次回DRで報告します。</p>
+    <div class="row"><button class="btn secondary" data-act="copy" data-target="dr">文章をコピー</button></div>
+  </section>`;
+}
+
+function makeSOP(i) {
+  const r = PFMEA[i];
+  const steps = {
+    "切断": ["始業時に、切断機のストッパーの締付けを確認する（トルクレンチで規定値）。", "1個目の寸法をノギスで測り、記録表に書く。", "100個ごとに1個抜き取り、長さを測る。"],
+    "プレス曲げ": ["金型のショット数を確認し、5万ショットを超えていたら班長に連絡する。", "1時間ごとに角度ゲージを当て、すき間がないか見る。", "角度が外れたら、その1時間分を隔離して全数検査する。"],
+    "穴あけ": ["保護手袋をはめる（素手で触らない）。", "穴の周りを、指先チェック用の手袋でなでて引っかかりがないか確かめる。", "バリがあればバリ取り工具で取り、もう一度確かめる。", "ドリル刃の使用回数を記録し、決めた回数で交換する。"],
+    "溶接": ["溶接機の電流・電圧の記録が自動で取れているか画面で確認する。", "ビード（溶接の跡）の幅と色を限度見本と比べる。", "週1回、断面マクロ試験用の1個を品証に渡す。"],
+    "表面処理": ["前処理液の濃度を測り、日報に書く。", "膜厚計で1ロット5か所を測る。", "基準より薄いときは、そのロットを止めて品証に連絡する。"],
+    "最終検査": ["写真付きの検査手順書を見ながら、上から順に確かめる。", "チェックシートにすべて記入したか、最後に見直す。", "不良品は赤い箱に入れ、不良票を付ける。"],
+  }[r.proc];
+  return `<section class="ai-out">
+    <span class="ai-tag">the seed が作った下書き</span>
+    <h2>検査作業手順書：${esc(r.proc)}工程</h2>
+    <p class="small muted">品番 BR-200 ／ ${today()} 作成 ／ もとにした工程FMEA：「${esc(r.mode)}」RPN ${r.s * r.o * r.d}</p>
+    <div class="note warn"><strong>なぜこの検査をするのか：</strong>${esc(r.mode)}があると「${esc(r.effect)}」につながるためです。主な原因は「${esc(r.cause)}」です。</div>
+    <h3>手順</h3>
+    <ol class="steps">${steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+    <h3>異常のときは</h3>
+    <p>作業を止めて、班長と品質保証課（内線 230）に知らせます。自分の判断で流さないでください。</p>
+    <div class="row"><button class="btn secondary" data-act="copy" data-target="sop">文章をコピー</button></div>
+  </section>`;
+}
+
+// ---------- 7. 打刻 ----------
+function addPunch(p) {
+  p.pid = Date.now() + "-" + Math.random().toString(36).slice(2, 6);
+  p.user = state.user.id;
+  state.punches.push(p);
+  save("seed.punches", state.punches);
+}
+
+function gpsPunch(type) {
+  state.gpsMsg = "";
+  if (!navigator.geolocation) { gpsFail(type, "この端末では位置情報が使えません。"); return; }
+  toast("位置情報を確認しています…");
+  navigator.geolocation.getCurrentPosition(pos => {
+    const here = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    const d = distanceM(here, OFFICE);
+    const ok = d <= OFFICE.radius;
+    addPunch({ date: today(), time: hhmm(new Date()), type, method: "GPS",
+      where: ok ? `${OFFICE.name}（${d}m）` : `${OFFICE.name}から${d}m離れた場所`, status: ok ? "承認済" : "要承認" });
+    toast(ok ? `${type}を記録しました` : `${type}を記録しました（会社から離れているため要承認）`);
+    render();
+  }, err => {
+    const reason = err.code === 1 ? "位置情報の利用が許可されていません。" : "位置情報を取得できませんでした。";
+    gpsFail(type, reason);
+  }, { timeout: 8000, maximumAge: 60000 });
+}
+function gpsFail(type, reason) {
+  state.gpsMsg = `${reason} 下の「手入力」で${type}を記録してください。（この試作版のプレビュー画面では、安全のためGPSが使えないことがあります）`;
+  state.manual = true;
+  render();
+  const sel = document.getElementById("m-type");
+  if (sel) sel.value = type;
+}
+
+// ---------- 8. 画面を描く・ボタンの動き ----------
+function render() {
+  const root = document.getElementById("root");
+  root.innerHTML = state.user ? renderApp() : renderLogin();
+}
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]");
+  if (!el) return;
+  const act = el.dataset.act;
+  if (act === "noop") { e.preventDefault(); toast("本物では、社員番号を入れると登録メールに再発行のリンクが届きます"); return; }
+  if (act === "toast") { toast(el.dataset.msg); return; }
+  if (act === "pw-no") { state.pwPrompt = false; }
+  else if (act === "pw-yes") { state.pwPrompt = false; state.view = "attendance"; state.tab = 0; setTimeout(() => document.getElementById("pw-new")?.scrollIntoView({ block: "center" }), 0); }
+  else if (act === "tab") { state.tab = Number(el.dataset.i); }
+  else if (act === "cal-day") { state.calDay = el.dataset.day; }
+  else if (act === "cal-month") {
+    const n = Number(el.dataset.n);
+    if (n === 0) { state.calMonth = null; state.calDay = null; }
+    else { const [y, m] = (state.calMonth || today().slice(0, 7)).split("-").map(Number); const d = new Date(y, m - 1 + n, 1, 12); state.calMonth = ymd(d).slice(0, 7); }
+  }
+  else if (act === "todo-toggle") { const t = state.todos.find(x => x.id === el.dataset.id); if (t) t.done = !t.done; }
+  else if (act === "todo-add") {
+    const t = document.getElementById("td-t").value.trim();
+    if (!t) { toast("やることを入れてください"); return; }
+    const w = document.getElementById("td-w").value.replace(/さんに頼む$/, "");
+    state.todos.push({ id: "t" + Date.now(), title: t, due: document.getElementById("td-d").value, done: false, who: w });
+    toast("足しました（見本なので保存はされません）");
+  }
+  else if (act === "card-open") { state.card = el.dataset.id; state.view = "card"; state.tab = 0; window.scrollTo(0, 0); }
+  else if (act === "memo-add") {
+    const box = document.getElementById("memo"); const body = box.value.trim();
+    if (!body) { toast("メモを入れてください"); return; }
+    state.cards.find(x => x.id === el.dataset.id).memos.push([state.user.name, today(), body]);
+    toast("メモを残しました（見本なので保存はされません）");
+  }
+  else if (act === "login") {
+    state.pwPrompt = true; state.tab = 0;
+    state.user = USERS.find(u => u.id === el.dataset.id);
+    state.view = "home"; state.viewDept = null; state.dr = null; state.sop = null; state.gpsMsg = ""; state.manual = false;
+  } else if (act === "logout") {
+    state.user = null;
+  } else if (act === "nav") {
+    state.view = el.dataset.view; state.viewDept = el.dataset.dept || null; state.gpsMsg = "";
+    const gi = tabGroups().findIndex(g => (g.dept || null) === state.viewDept && g.items.some(([v]) => v === state.view));
+    if (gi >= 0) state.tab = gi;
+    window.scrollTo(0, 0);
+  } else if (act === "gps") {
+    gpsPunch(el.dataset.type); return;
+  } else if (act === "toggle-manual") {
+    state.manual = !state.manual;
+  } else if (act === "manual-save") {
+    const v = id => document.getElementById(id).value;
+    if (!v("m-date") || !v("m-time")) { toast("日付と時刻を入れてください"); return; }
+    addPunch({ date: v("m-date"), time: v("m-time"), type: v("m-type"), method: "手入力", where: v("m-reason"), status: "要承認" });
+    toast("手入力で記録しました。承認されると確定します");
+  } else if (act === "advance") {
+    const d = DEALS.find(x => x.id === +el.dataset.id); d.stage = Math.min(4, d.stage + 1);
+    toast(`${d.co}：「${STAGES[d.stage]}」に進めました`);
+  } else if (act === "book") {
+    FACILITIES[+el.dataset.f].slots[el.dataset.t] = state.user.name + "（予約）";
+    toast("予約しました");
+  } else if (act === "paid") {
+    INVOICES[+el.dataset.i].status = "入金済"; toast("入金済みにしました");
+  } else if (act === "exp-ok") {
+    EXPENSES.find(x => x.id === +el.dataset.id).status = "承認済"; toast("承認しました");
+  } else if (act === "leave-ok") {
+    LEAVES.find(x => x.id === +el.dataset.id).status = "承認済"; toast("承認しました");
+  } else if (act === "punch-ok") {
+    const p = state.punches.find(x => x.pid === el.dataset.pid); p.status = "承認済";
+    save("seed.punches", state.punches); toast("打刻を承認しました");
+  } else if (act === "sales-unit") {
+    state.salesUnit = el.dataset.unit;
+  } else if (act === "sales-save") {
+    const sf = state.sf;
+    if (!sf.date || !(sf.qty > 0) || !(sf.price >= 0)) { toast("日付・数量・単価を確かめてください"); return; }
+    const me = state.user.role === "sales" ? state.user.id : "u3";
+    state.salesAdded.push({ id: "m" + Date.now(), date: sf.date, rep: me, product: sf.product, customer: sf.customer, qty: sf.qty, price: sf.price, note: sf.note, mine: true });
+    save("seed.salesAdded", state.salesAdded);
+    sf.qty = 1; sf.note = "";
+    toast("売上を登録しました");
+  } else if (act === "sales-del") {
+    state.salesAdded = state.salesAdded.filter(s => s.id !== el.dataset.id);
+    save("seed.salesAdded", state.salesAdded); toast("取り消しました");
+  } else if (act === "patent-run") {
+    state.patentShown = true;
+    toast("見本の結果を表示しました（イメージ図）");
+  } else if (act === "sim-tab") {
+    state.simTab = el.dataset.tab;
+  } else if (act === "sim-run") {
+    const q = document.getElementById("sim-q");
+    if (q) state.simQuery = q.value;
+    state.simShown = el.dataset.kind;
+    toast("見本の結果を表示しました（イメージ図）");
+  } else if (act === "make-dr") {
+    state.dr = makeDR(+document.getElementById("dr-th").value, document.getElementById("dr-name").value || "デザインレビュー");
+    toast("資料を作りました");
+  } else if (act === "make-sop") {
+    state.sop = makeSOP(+document.getElementById("sop-proc").value);
+    toast("手順書を作りました");
+  } else if (act === "copy") {
+    const box = el.closest(".ai-out");
+    const text = box.innerText.replace(/文章をコピー/, "").trim();
+    navigator.clipboard?.writeText(text).then(() => toast("コピーしました"), () => toast("コピーできませんでした。文章を選んでコピーしてください"));
+    return;
+  } else return;
+  render();
+});
+
+document.addEventListener("change", e => {
+  if (e.target.id === "sales-who") { state.salesWho = e.target.value; render(); return; }
+  if (e.target.id === "sf-product" && state.sf) {
+    const p = PRODUCTS.find(x => x.id === e.target.value);
+    state.sf.product = p.id; state.sf.price = p.price; render(); return; // 単価は台帳の標準単価を入れ直す
+  }
+  if (e.target.id === "sf-customer" && state.sf) state.sf.customer = e.target.value;
+  if (e.target.id === "sf-date" && state.sf) state.sf.date = e.target.value;
+  if (e.target.id === "sim-file" && e.target.files && e.target.files[0]) {
+    const reader = new FileReader();
+    reader.onload = () => { state.simPhoto = reader.result; render(); };
+    reader.readAsDataURL(e.target.files[0]);
+  }
+});
+
+document.addEventListener("input", e => {
+  if (state.sf && ["sf-qty", "sf-price", "sf-note"].includes(e.target.id)) {
+    const key = e.target.id.slice(3);
+    state.sf[key] = key === "note" ? e.target.value : Number(e.target.value);
+    const a = document.getElementById("sf-amount");
+    if (a) a.textContent = yen((state.sf.qty || 0) * (state.sf.price || 0));
+  }
+  if (e.target.id === "sim-note") state.simNote = e.target.value;
+  if (e.target.id === "sim-q") state.simQuery = e.target.value;
+  if (e.target.id === "rule-q") {
+    state.ruleQuery = e.target.value;
+    const pos = e.target.selectionStart;
+    render();
+    const box = document.getElementById("rule-q");
+    box.focus(); box.setSelectionRange(pos, pos);
+  }
+});
+
+// 時計を1秒ごとに進める
+setInterval(() => {
+  const c = document.getElementById("clock"); if (c) c.textContent = hhmm(new Date());
+  const s = document.getElementById("clock-s"); if (s) s.textContent = new Date().toTimeString().slice(0, 8);
+}, 1000);
+
+seedSamples();
+render();
+</script>
+</body>
+</html>
