@@ -397,6 +397,8 @@ section.block h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 24px; }
   display: block; width: 100%; height: auto; max-width: 100%;
   border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
 }
+/* 縦に長い画面（スマホ・長いページ）は上の部分だけ見せる。押すと全体が開きます */
+.shot img { max-height: 560px; object-fit: cover; object-position: top; }
 .shot a:hover img { border-color: var(--leaf); }
 .shot figcaption { font-size: 0.9rem; color: var(--muted); }
 .shot figcaption strong { display: block; color: var(--ink); font-size: 1rem; margin-bottom: 2px; }
